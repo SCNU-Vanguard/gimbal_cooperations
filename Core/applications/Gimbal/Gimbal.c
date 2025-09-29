@@ -5,7 +5,7 @@
 #include "remote_control.h"
 #include "CAN_receive.h"
 #include <math.h>
-
+#include "CAN_receive.h"
 
 uint8_t   GIMBAL_OFFSET_FLAG=1; //云台标志位
 gimbal_control_t gimbal_control;
@@ -27,10 +27,6 @@ void Gimbal_task(void){
         //以absolute_angle_set为目标值，absolute_angle（既motor_chassis[0].ecd）为当前值，进行pid串级环的运算，并将值存到motor_ready[0]结构体中
         Motor_Calc(&gimbal_control);
     }
-    
-
-
-
 }
 /**
   * @brief          计算ecd与offset_ecd(中值)之间的相对角度
@@ -159,6 +155,33 @@ void gimbal_angle_limit(gimbal_control_t *gimbal_motort,float *add_yaw,float *ad
 
 }
 
+// void Motor_Calc(gimbal_control_t *feedback_update)
+// {
+// 	static float tar=0,real=0;
+
+// 	//yaw轴计算
+// 	tar=feedback_update->gimbal_yaw_motor.absolute_angle_set;
+// 	real=feedback_update->gimbal_yaw_motor.absolute_angle;
+//     //过零点处理
+// 	while(tar-real > PI)
+// 	 	real += 2 * PI ;
+// 	while(tar-real < -PI)
+// 	 	real -= 2 * PI ;
+// 	motor_ready[MOTOR_YAW]->output_Position=pid_calc_raw(&gimbal_yaw_angle_pid,tar,real);
+//     motor_ready[MOTOR_YAW]->output=pid_calc_speed(&gimbal_yaw_speed_pid,motor_ready[MOTOR_YAW]->output_Position,motor_data[MOTOR_YAW]->speed);
+
+// 	//pitch轴计算
+// 	tar=feedback_update->gimbal_pitch_motor.absolute_angle_set;
+// 	real=feedback_update->gimbal_pitch_motor.absolute_angle;
+//     //过零点处理
+// 	while(tar-real > PI)
+// 	 	real += 2 * PI ;
+// 	while(tar-real < -PI)
+// 	 	real -= 2 * PI ;
+// 	motor_ready[MOTOR_PITCH]->output_Position=pid_calc_raw(&gimbal_yaw_angle_pid,tar,real);
+//     motor_ready[MOTOR_PITCH]->output=pid_calc_speed(&gimbal_yaw_speed_pid,motor_ready[MOTOR_PITCH]->output_Position,motor_data[MOTOR_PITCH]->speed);
+
+// }
 
 //云台回中值
 

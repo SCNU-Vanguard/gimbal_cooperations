@@ -39,6 +39,7 @@
 #include "bsp_can.h"
 #include "remote_control.h"
 #include "usbd_cdc_if.h"
+#include "FreeRTOS.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

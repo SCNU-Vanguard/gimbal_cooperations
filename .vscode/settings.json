@@ -8,6 +8,10 @@
         "remote_control.h": "c",
         "struct_typedef.h": "c",
         "config.h": "c",
-        "semphr.h": "c"
+        "semphr.h": "c",
+        "serial.h": "c",
+        "cmsis_os.h": "c",
+        "freertos.h": "c",
+        "main.h": "c"
     }
 }

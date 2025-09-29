@@ -5,6 +5,8 @@
 #include "math.h"
 #include "BMI088driver.h"
 
+
+
 //对 SENSER_OFFSET_FLAG 的位的操作
 #define SENSER_FLAG_SET(FLAG)   SENSER_OFFSET_FLAG|=FLAG                //标志位置1
 #define SENSER_FLAG_RESET(FLAG) SENSER_OFFSET_FLAG&=~FLAG               //标志位值0

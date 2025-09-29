@@ -2,10 +2,9 @@
 #include <math.h>
 #include "BMI088driver.h"
 #include "imu.h"
-#include "Gimbal.h"
 #include "FreeRTOS.h"
 #include "semphr.h"     // 信号量相关类型和函数声明（包含 SemaphoreHandle_t 定义）
-
+#include "Gimbal.h"
 #define kp 				25.00f
 #define ki 				0.005f
 #define cycle_T 		0.005f//200hz

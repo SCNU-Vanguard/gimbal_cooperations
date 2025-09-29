@@ -16,12 +16,12 @@
   @endverbatim
   ****************************(C) COPYRIGHT 2019 DJI****************************
   */
-#include"main.h"
-#include"motor.h"
+
 #ifndef CAN_RECEIVE_H
 #define CAN_RECEIVE_H
 
-
+#include"main.h"
+#include"motor.h"
 
 #define CHASSIS_CAN hcan1
 #define GIMBAL_CAN hcan1

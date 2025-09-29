@@ -52,7 +52,5 @@ platform\can_receive.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/semph
 platform\can_receive.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h
 platform\can_receive.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h
 platform\can_receive.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
-platform\can_receive.o: ../Core/applications/communication_bond/CAN_receive.h
-platform\can_receive.o: ../Core/applications/algorithm/motor.h
 platform\can_receive.o: ../Core/applications/communication_bond/remote_control.h
 platform\can_receive.o: ../Core/applications/communication_bond/bsp_rc.h

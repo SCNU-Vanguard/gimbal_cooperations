@@ -1,9 +1,10 @@
-#ifndef __MOTOR_H
-#define __MOTOR_H
-#include "main.h"
+#ifndef MOTOR_H
+#define MOTOR_H
+// #include "main.h"
 #include "config.h"
 #include "struct_typedef.h"
 #include "Gimbal.h"
+
 //接收电机结构体
 typedef struct 
 {
@@ -24,6 +25,8 @@ typedef struct
 
 extern Motor_send *motor_ready[MOTOR_NUM];
 extern Motor_list *motor_data[MOTOR_NUM];
-void MotorSetTar(Motor_send *motor,float val, ValSet_Type_e type);
+
+
 void Motor_Calc(gimbal_control_t *feedback_update);
+void MotorSetTar(Motor_send *motor,float val, ValSet_Type_e type);
 #endif /* __MOTOR_H */

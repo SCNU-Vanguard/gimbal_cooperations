@@ -4,7 +4,7 @@
 
 #include "FreeRTOS.h"
 #include "semphr.h"     // 信号量相关类型和函数声明（包含 SemaphoreHandle_t 定义）
-#include "CAN_receive.h"
+
 #include "struct_typedef.h"
 #include "remote_control.h"
 
@@ -44,6 +44,8 @@ extern uint8_t   GIMBAL_OFFSET_FLAG; //标志位组
 #define GIMBAL_CALI_REDUNDANT_ANGLE 0.1f
 
 
+//任务初始化 空闲一段时间
+#define GIMBAL_TASK_INIT_TIME 201
 
 typedef struct
 {
@@ -67,7 +69,7 @@ typedef struct
 
 typedef struct
 {
-    const motor_measure_t *gimbal_motor_measure;
+//    const motor_measure_t *gimbal_motor_measure;
     gimbal_PID_t gimbal_motor_absolute_angle_pid;
     gimbal_PID_t gimbal_motor_relative_angle_pid;
 
@@ -112,8 +114,6 @@ typedef struct
     gimbal_step_cali_t gimbal_cali;
 } gimbal_control_t;//云台模式控制
 
-//任务初始化 空闲一段时间
-#define GIMBAL_TASK_INIT_TIME 201
 
 /**
   * @brief          云台任务，间隔 GIMBAL_CONTROL_TIME 1ms
@@ -128,6 +128,8 @@ void gimbal_angle_limit(gimbal_control_t *gimbal_motort, float *add_yaw,float *a
 // 再声明其他函数（如 gimbal_calibration）
 void gimbal_detact_calibration(gimbal_control_t *gimbal_motor_t);
 //float temp=local_rc_ctrl->rc.ch[0];
+// void Motor_Calc(gimbal_control_t *feedback_update);
+
 extern SemaphoreHandle_t g_xSemTicks;
 
 #endif  // 结束保护宏

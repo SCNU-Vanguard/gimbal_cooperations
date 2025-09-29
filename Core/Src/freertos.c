@@ -31,6 +31,7 @@
 #include "remote_control.h"
 #include "Serial.h"
 #include "VPC.h"
+#include "cmsis_os.h"  // ??CMSIS-RTOS????
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -160,13 +161,13 @@ void StartDefaultTask(void const * argument)
 
 void VPC_Task(void *argument)
 {
-   VPC_Init();
-   uint32_t lastWakeTime = osKernelGetTickCount();
-   for(;;)
+  //  astWakeTime = osKernelGetTickCount();
+   for(;;)VPC_Init();
+  //  uint32_t l
     {
-        VPC_Receive();
-        Pack_And_Send_Data_ROS2(&aim_packet_to_nuc);
-        osDelayUntil(&lastWakeTime, VPC_TASK_PERIOD);
+        // VPC_Receive();
+        // Pack_And_Send_Data_ROS2(&aim_packet_to_nuc);
+        // osDelayUntil(&lastWakeTime, VPC_TASK_PERIOD);
     }
 
 }

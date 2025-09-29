@@ -70,8 +70,6 @@ platform\main.o: ../Core/Instance/vofa.h
 platform\main.o: ../Core/applications/algorithm/motor.h
 platform\main.o: ../Core/Inc/config.h
 platform\main.o: ../Core/applications/Gimbal/Gimbal.h
-platform\main.o: ../Core/applications/communication_bond/CAN_receive.h
-platform\main.o: ../Core/applications/algorithm/motor.h
 platform\main.o: ../Core/applications/communication_bond/remote_control.h
 platform\main.o: ../Core/applications/communication_bond/bsp_rc.h
 platform\main.o: ../Core/applications/algorithm/pid.h
