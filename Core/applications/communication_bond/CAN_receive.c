@@ -20,7 +20,7 @@
 #include "CAN_receive.h"
 #include "main.h"
 
-
+#include "vofa.h"
 
 
 motor_measure_t motor_chassis[7];
@@ -32,10 +32,10 @@ extern CAN_HandleTypeDef hcan1;
 CAN_RxHeaderTypeDef rx_header;
 
 //motor data read
-void get_motor_measure(motor_measure_t *ptr, uint8_t *data)
+void get_motor_measure(Motor_list *ptr, uint8_t *data)
 	    {
-	        ptr->ecd = (uint16_t)((data[0] << 8) | data[1]);
-	        ptr->speed_rpm = (int16_t)((data[2] << 8) | data[3]);
+	        ptr->angle = (uint16_t)((data[0] << 8) | data[1]);
+	        ptr->speed = (int16_t)((data[2] << 8) | data[3]);
 	        ptr->given_current = (int16_t)((data[4] << 8) | data[5]);
 	        ptr->temperate = data[6];
 	    }
@@ -62,17 +62,17 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 		HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &rx_header, rx_data);
 		switch (rx_header.StdId)
 		    {
+		        case CAN_YAW_MOTOR_ID:
+		        	get_motor_measure(&motor_data[0], rx_data);
+		        	break;
+		        case CAN_PIT_MOTOR_ID:
+		        	get_motor_measure(&motor_data[1], rx_data);
+		        	break;
 		        case CAN_3508_M1_ID:
-		        	get_motor_measure(&motor_chassis[0], rx_data);
-		        	break;
-		        case CAN_3508_M2_ID:
-		        	get_motor_measure(&motor_chassis[1], rx_data);
-		        	break;
-		        case CAN_3508_M3_ID:
-		        	get_motor_measure(&motor_chassis[2], rx_data);
+		        	get_motor_measure(&motor_data[1], rx_data);
 		        	break;
 		        case CAN_3508_M4_ID:
-		        	get_motor_measure(&motor_chassis[3], rx_data);
+		        	get_motor_measure(&motor_data[1], rx_data);
 		        	break;
 		        default:
 		                {
@@ -184,6 +184,11 @@ void CAN_cmd_chassis(int16_t motor1, int16_t motor2, int16_t motor3, int16_t mot
 }
 
 void Can_Send(void){
+  while(1){
   //CAN_cmd_chassis(motor_ready[0]->output,0,0,0);
-  CAN_cmd_gimbal(motor_ready[MOTOR_YAW]->output,motor_ready[MOTOR_PITCH]->output,0,0);
+  CAN_cmd_gimbal(0,0,motor_ready[MOTOR_PITCH].output,0);
+		//CAN_cmd_gimbal(0,0,3000,0);
+  //vofa_demo2(motor_data[0].angle,motor_ready[MOTOR_PITCH].output,&huart6);
+  vofa_demo3(motor_data[0].angle,motor_ready[MOTOR_PITCH].target,motor_ready[MOTOR_PITCH].output,&huart6);
+  }
 }

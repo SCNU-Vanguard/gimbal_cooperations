@@ -93,3 +93,13 @@ void vofa_demo2(float data1, float data2, UART_HandleTypeDef *huart)
   // Call the function to send the frame tail
   VOFA_Send_Frametail(huart);
 }
+void vofa_demo3(float data1, float data2, float data3 , UART_HandleTypeDef *huart)
+{
+
+  // Call the function to store the data in the buffer
+  VOFA_Send_Data(0, data1);
+  VOFA_Send_Data(1, data2);
+  VOFA_Send_Data(2, data3);
+  // Call the function to send the frame tail
+  VOFA_Send_Frametail(huart);
+}

@@ -154,8 +154,10 @@ void IMU_Calibration(void){
 
 void INS(void)
 {
+	xSemaphoreTake(g_xSemTicks, portMAX_DELAY);
+	while(1){
 	//设置信号量
-	if (xSemaphoreTake(g_xSemTicks, portMAX_DELAY)) {
+	
 	IMU_GetValues();
 	IMU_Calibration();
 	IMU_AHRSupdate(&imu_data);
@@ -164,5 +166,9 @@ void INS(void)
 	imu_Angle.Roll  = atan2(2 * q[2] * q[3] + 2 * q[0] * q[1], -2 * q[1] * q[1] - 2 * q[2]* q[2] + 1)* 57.2957;
 
 	imu_Angle.Yaw  += imu_data.GZ* 57.2957* cycle_T* 4;//由于在静止状态下z轴方向本身就有重力加速度，所以不用将加速度计和陀螺仪的结果融合，直接对角速度进行积分（这里只有乘上4后才会变得准一些，具体原因尚不清楚）
+		vTaskDelay(pdMS_TO_TICKS(10)); // 10ms延迟
+    
 }
-}
+
+	}
+

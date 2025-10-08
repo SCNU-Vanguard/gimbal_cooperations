@@ -21,10 +21,16 @@ void Gimbal_task(void){
 
     while (1)
     {
-        gimbal_feedback_update(&gimbal_control,&add_yaw,&add_pitch);
-        gimbal_detact_calibration(&gimbal_control);
-        gimbal_angle_limit(&gimbal_control,&add_yaw,&add_pitch);
+				 gimbal_detact_calibration(&gimbal_control);
+         gimbal_feedback_update(&gimbal_control,&add_yaw,&add_pitch);
+         gimbal_angle_limit(&gimbal_control,&add_yaw,&add_pitch);
         //以absolute_angle_set为目标值，absolute_angle（既motor_chassis[0].ecd）为当前值，进行pid串级环的运算，并将值存到motor_ready[0]结构体中
+        //gimbal_control.gimbal_pitch_motor.absolute_angle_set=2000+gimbal_control.gimbal_rc_ctrl->rc.ch[3]*10;
+		//gimbal_control.gimbal_pitch_motor.absolute_angle_set=3000;
+        //gimbal_control.gimbal_yaw_motor.absolute_angle_set=0;
+        //motor_ready[MOTOR_PITCH].target=gimbal_control.gimbal_pitch_motor.absolute_angle_set;
+		//motor_ready[MOTOR_PITCH].target=gimbal_control.gimbal_pitch_motor.absolute_angle_set;
+        //motor_ready[MOTOR_YAW].target=gimbal_control.gimbal_yaw_motor.absolute_angle_set;
         Motor_Calc(&gimbal_control);
     }
 }
@@ -39,31 +45,34 @@ static fp32 motor_ecd_to_angle_change(uint16_t ecd, uint16_t offset_ecd)
     int32_t relative_ecd = ecd - offset_ecd;
     if (relative_ecd > HALF_ECD_RANGE)
     {
-        relative_ecd -= ECD_RANGE;
+        relative_ecd = ECD_RANGE-relative_ecd;
     }
     else if (relative_ecd < -HALF_ECD_RANGE)
     {
         relative_ecd += ECD_RANGE;
     }
 
-    return relative_ecd * MOTOR_ECD_TO_RAD;
+    //return relative_ecd * MOTOR_ECD_TO_RAD;
+    return relative_ecd;
 }
 
 //云台更新数据
 static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_yaw,float *add_pitch){
 
     //更新电机实时角度
-    feedback_update->gimbal_pitch_motor.motor_gyro=motor_chassis[0].ecd;
-    feedback_update->gimbal_yaw_motor.motor_gyro=motor_chassis[1].ecd;
+    feedback_update->gimbal_pitch_motor.motor_gyro=motor_data[0].angle;
+    feedback_update->gimbal_yaw_motor.motor_gyro=motor_data[1].angle;
 
     //更新姿态角实时角度
-    feedback_update->gimbal_pitch_motor.absolute_angle=imu_Angle.Pitch;
-    feedback_update->gimbal_yaw_motor.absolute_angle=imu_Angle.Yaw;
+    //feedback_update->gimbal_pitch_motor.absolute_angle=imu_Angle.Pitch;
+		feedback_update->gimbal_pitch_motor.absolute_angle=motor_data[0].angle;
+    //feedback_update->gimbal_yaw_motor.absolute_angle=imu_Angle.Yaw;
+		feedback_update->gimbal_yaw_motor.absolute_angle=motor_data[1].angle;
 
     //更新遥控器实时角度
     feedback_update->gimbal_rc_ctrl=get_remote_control_point();
-    *add_yaw=feedback_update->gimbal_rc_ctrl->rc.ch[0];
-    *add_pitch=feedback_update->gimbal_rc_ctrl->rc.ch[1];
+    *add_yaw=feedback_update->gimbal_rc_ctrl->rc.ch[2];
+    *add_pitch=feedback_update->gimbal_rc_ctrl->rc.ch[3];
     //更新电机目标机械角度
     feedback_update->gimbal_pitch_motor.motor_gyro_set=feedback_update->gimbal_pitch_motor.motor_gyro+*add_pitch;
     feedback_update->gimbal_yaw_motor.motor_gyro_set=feedback_update->gimbal_yaw_motor.motor_gyro+*add_yaw;
@@ -73,6 +82,7 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_
     feedback_update->gimbal_yaw_motor.relative_angle_set=motor_ecd_to_angle_change(feedback_update->gimbal_yaw_motor.motor_gyro_set,0);
 
     //计算云台相对于最大限幅值的相对角度，同时判断此时电机处于左值还是右值
+
     if(feedback_update->gimbal_pitch_motor.relative_angle_set-PITCH_Limit_Hight>0)
     feedback_update->gimbal_pitch_motor.relative_angle=fabs(feedback_update->gimbal_pitch_motor.relative_angle_set-PITCH_Limit_Hight);
     else if(feedback_update->gimbal_pitch_motor.relative_angle_set-PITCH_Limit_Hight<0)
@@ -87,13 +97,19 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_
 }
 //云台校准中值并执行归中
 void gimbal_detact_calibration(gimbal_control_t *gimbal_motort){
+   
     //添加标志位判断有无执行过归中，如果有，则不再归中
-    if(GIMBAL_GET_FLAG(GIMBAL_OFFSET_FLAG)){
+    while(GIMBAL_GET_FLAG(GIMBAL_OFFSET_FLAG)){
         
         static uint16_t int_time=0;
         static uint16_t int_stop_time=0;
-        MotorSetTar(motor_ready[0], 0.0f, ABS);  
-        MotorSetTar(motor_ready[1], 0.0f, ABS);
+        gimbal_motort->gimbal_pitch_motor.absolute_angle=motor_data[0].angle;
+				gimbal_motort->gimbal_pitch_motor.absolute_angle_set=0;
+        MotorSetTar(&motor_ready[0], 0.0f, ABS);  
+        MotorSetTar(&motor_ready[1], 0.0f, ABS);
+				Motor_Calc(&gimbal_control);
+			
+        //vTaskDelay(pdMS_TO_TICKS(100)); // 10ms延迟
         int_time++;
         if(fabs(gimbal_motort->gimbal_pitch_motor.motor_gyro-INIT_PITCH_SET)<GIMBAL_INIT_ANGLE_ERROR&&
            fabs(gimbal_motort->gimbal_yaw_motor.motor_gyro-INIT_YAW_SET)<GIMBAL_INIT_ANGLE_ERROR){
@@ -109,9 +125,10 @@ void gimbal_detact_calibration(gimbal_control_t *gimbal_motort){
         //    }
 
            //超过初始化最大时间，或者已经稳定到中值一段时间，退出初始化状态开关打下档，或者掉线
-           if(int_time < GIMBAL_INIT_TIME && int_stop_time < GIMBAL_INIT_STOP_TIME){
-            return;
-           }else{
+        //    if(int_time < GIMBAL_INIT_TIME && int_stop_time < GIMBAL_INIT_STOP_TIME){
+        //     return;
+        //    }else{
+        if(int_time > GIMBAL_INIT_TIME && int_stop_time < GIMBAL_INIT_STOP_TIME){
             //信号量释放
             xSemaphoreGive(g_xSemTicks);
             int_stop_time = 0;
@@ -135,21 +152,159 @@ void gimbal_angle_limit(gimbal_control_t *gimbal_motort,float *add_yaw,float *ad
         return;
     }
 	 //pitch
-    if(*add_pitch>0&&gimbal_motort->gimbal_pitch_motor.relative_angle-*add_pitch<0){
-        *add_pitch=gimbal_motort->gimbal_pitch_motor.relative_angle;
-        gimbal_motort->gimbal_pitch_motor.absolute_angle_set=gimbal_motort->gimbal_pitch_motor.absolute_angle+*add_pitch;
-    }else if(*add_pitch<0&&gimbal_motort->gimbal_pitch_motor.relative_angle+*add_pitch<0){
-        *add_pitch=-gimbal_motort->gimbal_pitch_motor.relative_angle;
-        gimbal_motort->gimbal_pitch_motor.absolute_angle_set=gimbal_motort->gimbal_pitch_motor.absolute_angle+*add_pitch;
-    }    
+    
+    
+    
+    //  if(*add_pitch>0&&gimbal_motort->gimbal_pitch_motor.relative_angle-*add_pitch<0){
+    //     *add_pitch=gimbal_motort->gimbal_pitch_motor.relative_angle;
+    //     gimbal_motort->gimbal_pitch_motor.absolute_angle_set=gimbal_motort->gimbal_pitch_motor.absolute_angle+*add_pitch;
+    //     MotorSetTar(&motor_ready[1],gimbal_motort->gimbal_pitch_motor.absolute_angle_set,ABS);
+	// 			//HAL_Delay(100);
+    //             vTaskDelay(pdMS_TO_TICKS(10)); // 10ms延迟
+    // }else if(*add_pitch<0&&gimbal_motort->gimbal_pitch_motor.relative_angle+*add_pitch<0){
+    //     *add_pitch=-gimbal_motort->gimbal_pitch_motor.relative_angle;
+    //     gimbal_motort->gimbal_pitch_motor.absolute_angle_set=gimbal_motort->gimbal_pitch_motor.absolute_angle+*add_pitch;
+    //     MotorSetTar(&motor_ready[1],gimbal_motort->gimbal_pitch_motor.absolute_angle_set,ABS);
+	// 			// HAL_Delay(100);
+    //             vTaskDelay(pdMS_TO_TICKS(10)); // 10ms延迟
+    // }else{
+    //     gimbal_motort->gimbal_pitch_motor.absolute_angle_set=gimbal_motort->gimbal_pitch_motor.absolute_angle+*add_pitch;
+    //     MotorSetTar(&motor_ready[1],gimbal_motort->gimbal_pitch_motor.absolute_angle_set,ABS);
+	// 			// HAL_Delay(100);
+    //             vTaskDelay(pdMS_TO_TICKS(10)); // 10ms延迟
+    // }    
+
+
+
+
+    //根据当前电机的绝对角度值来判断处于左值还是右值，从而决定目标值
+
+    // if(gimbal_motort->gimbal_pitch_motor.absolute_angle_set>HALF_ECD_RANGE){
+    //      if(gimbal_motort->gimbal_pitch_motor.relative_angle_set-PITCH_Limit_Hight-4000>0){
+    //         MotorSetTar(&motor_ready[1],PITCH_Limit_Hight,ABS);
+    //         // vTaskDelay(pdMS_TO_TICKS(100)); // 10ms延迟
+    //      }else if(gimbal_motort->gimbal_pitch_motor.relative_angle_set-PITCH_Limit_Hight<0){
+	// 				 gimbal_motort->gimbal_pitch_motor.absolute_angle_set=*add_pitch*10;
+    //         MotorSetTar(&motor_ready[1],gimbal_motort->gimbal_pitch_motor.absolute_angle_set,ABS);
+    //         // vTaskDelay(pdMS_TO_TICKS(100)); // 10ms延迟
+    //      }
+
+    // }else if(gimbal_motort->gimbal_pitch_motor.absolute_angle_set<HALF_ECD_RANGE){
+    //         if(gimbal_motort->gimbal_pitch_motor.relative_angle_set-PITCH_Limit_Low>0){
+    //             MotorSetTar(&motor_ready[1],PITCH_Limit_Low,ABS);
+    //             // vTaskDelay(pdMS_TO_TICKS(100)); // 10ms延迟
+    //         }else if(gimbal_motort->gimbal_pitch_motor.relative_angle_set-PITCH_Limit_Low<0){
+	// 						gimbal_motort->gimbal_pitch_motor.absolute_angle_set=*add_pitch*10;
+    //             MotorSetTar(&motor_ready[1],gimbal_motort->gimbal_pitch_motor.absolute_angle_set,ABS);
+    //             // vTaskDelay(pdMS_TO_TICKS(100)); // 10ms延迟
+    //         }
+    // }
+
+    //根据当前输入值的正负来判断处于左值还是右值，从而决定目标值,并且加上一个死区，防止频繁切换
+    if(*add_pitch<0){
+        if(*add_pitch<=-200){
+        //  if(gimbal_motort->gimbal_pitch_motor.relative_angle_set+PITCH_Limit_Hight>0){
+            MotorSetTar(&motor_ready[1],PITCH_Limit_Hight,ABS);
+            // vTaskDelay(pdMS_TO_TICKS(100)); // 10ms延迟
+        //  }else if(gimbal_motort->gimbal_pitch_motor.relative_angle_set+PITCH_Limit_Hight<0){
+		// 			 gimbal_motort->gimbal_pitch_motor.absolute_angle_set=*add_pitch*10;
+        //     MotorSetTar(&motor_ready[1],gimbal_motort->gimbal_pitch_motor.absolute_angle_set,ABS);
+            // vTaskDelay(pdMS_TO_TICKS(100)); // 10ms延迟
+         //}
+
+    }else{
+        gimbal_motort->gimbal_pitch_motor.absolute_angle_set=*add_pitch*10;
+        // if(gimbal_motort->gimbal_pitch_motor.absolute_angle_set-gimbal_motort->gimbal_pitch_motor.absolute_angle>HALF_ECD_RANGE){
+        //     gimbal_motort->gimbal_pitch_motor.absolute_angle-=ECD_RANGE;
+        // }else if(gimbal_motort->gimbal_pitch_motor.absolute_angle_set-gimbal_motort->gimbal_pitch_motor.absolute_angle<HALF_ECD_RANGE){
+        //     gimbal_motort->gimbal_pitch_motor.absolute_angle+=ECD_RANGE;
+        // }
+        MotorSetTar(&motor_ready[1],gimbal_motort->gimbal_pitch_motor.absolute_angle_set,ABS);
+    }
+    }else if(*add_pitch>0){
+        if(*add_pitch>=200){
+            // if(gimbal_motort->gimbal_pitch_motor.relative_angle_set-PITCH_Limit_Low>0){
+                MotorSetTar(&motor_ready[1],PITCH_Limit_Low,ABS);
+            //     // vTaskDelay(pdMS_TO_TICKS(100)); // 10ms延迟
+            // }else if(gimbal_motort->gimbal_pitch_motor.relative_angle_set-PITCH_Limit_Low<0){
+			// 	gimbal_motort->gimbal_pitch_motor.absolute_angle_set=*add_pitch*10;
+            //     MotorSetTar(&motor_ready[1],gimbal_motort->gimbal_pitch_motor.absolute_angle_set,ABS);
+            //     // vTaskDelay(pdMS_TO_TICKS(100)); // 10ms延迟
+            // }
+    }else{
+        gimbal_motort->gimbal_pitch_motor.absolute_angle_set=*add_pitch*10;
+        // if(gimbal_motort->gimbal_pitch_motor.absolute_angle_set-gimbal_motort->gimbal_pitch_motor.absolute_angle>HALF_ECD_RANGE){
+        //     gimbal_motort->gimbal_pitch_motor.absolute_angle-=ECD_RANGE;
+        // }else if(gimbal_motort->gimbal_pitch_motor.absolute_angle_set-gimbal_motort->gimbal_pitch_motor.absolute_angle<HALF_ECD_RANGE){
+        //     gimbal_motort->gimbal_pitch_motor.absolute_angle+=ECD_RANGE;
+        // }
+				MotorSetTar(&motor_ready[1],gimbal_motort->gimbal_pitch_motor.absolute_angle_set,ABS);
+    }
+}
+// else{
+
+//                 gimbal_motort->gimbal_pitch_motor.absolute_angle_set=*add_pitch*10;
+
+//                 MotorSetTar(&motor_ready[1],gimbal_motort->gimbal_pitch_motor.absolute_angle_set,ABS);
+//     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     //yaw
     if(*add_yaw>0&&gimbal_motort->gimbal_yaw_motor.relative_angle-*add_yaw<0){
         *add_yaw=gimbal_motort->gimbal_yaw_motor.relative_angle;
         gimbal_motort->gimbal_yaw_motor.absolute_angle_set=gimbal_motort->gimbal_yaw_motor.absolute_angle+*add_yaw;
+        MotorSetTar(&motor_ready[0],gimbal_motort->gimbal_yaw_motor.absolute_angle_set,ABS);
     }else if(*add_yaw<0&&gimbal_motort->gimbal_yaw_motor.relative_angle+*add_yaw<0){
         *add_yaw=-gimbal_motort->gimbal_yaw_motor.relative_angle;
         gimbal_motort->gimbal_yaw_motor.absolute_angle_set=gimbal_motort->gimbal_yaw_motor.absolute_angle+*add_yaw;
+        MotorSetTar(&motor_ready[0],gimbal_motort->gimbal_yaw_motor.absolute_angle_set,ABS);
+    }else{
+        gimbal_motort->gimbal_yaw_motor.absolute_angle_set=gimbal_motort->gimbal_yaw_motor.absolute_angle+*add_yaw;
+        MotorSetTar(&motor_ready[0],gimbal_motort->gimbal_yaw_motor.absolute_angle_set,ABS);
     }    
 
 

@@ -5,6 +5,8 @@
 #include "struct_typedef.h"
 #include "Gimbal.h"
 
+#define pi 3.1415926f
+
 //接收电机结构体
 typedef struct 
 {
@@ -23,10 +25,12 @@ typedef struct
     float output_Position;
 }Motor_send;
 
-extern Motor_send *motor_ready[MOTOR_NUM];
-extern Motor_list *motor_data[MOTOR_NUM];
+extern Motor_send motor_ready[MOTOR_NUM];
+extern Motor_list motor_data[MOTOR_NUM];
 
 
 void Motor_Calc(gimbal_control_t *feedback_update);
 void MotorSetTar(Motor_send *motor,float val, ValSet_Type_e type);
+
+double msp(double x, double in_min, double in_max, double out_min, double out_max);
 #endif /* __MOTOR_H */

@@ -119,11 +119,11 @@ void MX_FREERTOS_Init(void) {
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of can_send_motor */
-  osThreadDef(can_send_motor, Can_Send, osPriorityIdle, 0, 128);
+  osThreadDef(can_send_motor, Can_Send, osPriorityLow, 0, 128);
   can_send_motorHandle = osThreadCreate(osThread(can_send_motor), NULL);
 
   /* definition and creation of Gimbal */
-  osThreadDef(Gimbal, Gimbal_task, osPriorityIdle, 0, 128);
+  osThreadDef(Gimbal, Gimbal_task, osPriorityLow, 0, 128);
   GimbalHandle = osThreadCreate(osThread(Gimbal), NULL);
 
   /* definition and creation of IMU_sloving */

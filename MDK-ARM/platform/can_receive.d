@@ -54,3 +54,5 @@ platform\can_receive.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.
 platform\can_receive.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
 platform\can_receive.o: ../Core/applications/communication_bond/remote_control.h
 platform\can_receive.o: ../Core/applications/communication_bond/bsp_rc.h
+platform\can_receive.o: ../Core/Instance/vofa.h
+platform\can_receive.o: ../Core/Inc/usart.h

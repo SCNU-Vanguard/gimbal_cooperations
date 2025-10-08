@@ -76,12 +76,13 @@ void MX_FREERTOS_Init(void);
 
 //定时器2中断回调函数，获取欧拉角（TIM2 callback，get Euler angles）
 
-// void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+	 int16_t a;
 // 	if (htim==&htim2){
 // 		IMU_getEuleranAngles();
 // 		__HAL_TIM_CLEAR_IT(&htim2, TIM_IT_UPDATE);
 // 	}
-// }
+ }
 
 
 /* USER CODE END 0 */
@@ -179,8 +180,8 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 25;
-  RCC_OscInitStruct.PLL.PLLN = 336;
+  RCC_OscInitStruct.PLL.PLLM = 6;
+  RCC_OscInitStruct.PLL.PLLN = 168;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 7;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)

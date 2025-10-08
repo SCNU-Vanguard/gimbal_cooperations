@@ -17,8 +17,8 @@
 //电机限幅机械角度
 #define YAW_Limit_Low 2000
 #define YAW_Limit_Hight 6000
-#define PITCH_Limit_Low 1000
-#define PITCH_Limit_Hight 7000
+#define PITCH_Limit_Low 2000
+#define PITCH_Limit_Hight -2000
 
 //电机编码值转化成角度值
 #ifndef MOTOR_ECD_TO_RAD
@@ -28,7 +28,7 @@
 //对 GIMBAL_OFFSET_FLAG 的位的操作
 #define GIMBAL_FLAG_SET(FLAG)   GIMBAL_OFFSET_FLAG|=FLAG                //标志位置1
 #define GIMBAL_FLAG_RESET(FLAG) GIMBAL_OFFSET_FLAG&=~FLAG               //标志位值0
-#define GIMBAL_GET_FLAG(FLAG)   (GIMBAL_OFFSET_FLAG&FLAG)==FLAG ? 1 : 0  //获取标志位状态
+#define GIMBAL_GET_FLAG(FLAG)   (GIMBAL_OFFSET_FLAG&FLAG)==1 ? 1 : 0  //获取标志位状态
 
 #define calibration_gimbal 0x01 //第一位校准标志位
 extern uint8_t   GIMBAL_OFFSET_FLAG; //标志位组
@@ -40,7 +40,7 @@ extern uint8_t   GIMBAL_OFFSET_FLAG; //标志位组
 //云台初始化回中值，允许的误差,并且在误差范围内停止一段时间以及最大时间6s后解除初始化状态，
 #define GIMBAL_INIT_ANGLE_ERROR     0.1f
 #define GIMBAL_INIT_STOP_TIME       100
-#define GIMBAL_INIT_TIME            6000
+#define GIMBAL_INIT_TIME            10
 #define GIMBAL_CALI_REDUNDANT_ANGLE 0.1f
 
 

@@ -20,5 +20,6 @@ void vofa_demo(float data1,
 	       float data6,
 	       UART_HandleTypeDef *huart);
 void vofa_demo2(float data1, float data2, UART_HandleTypeDef *huart);
+void vofa_demo3(float data1, float data2,float data3 , UART_HandleTypeDef *huart);
 #endif // DEBUG
 
