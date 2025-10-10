@@ -186,8 +186,10 @@ void CAN_cmd_chassis(int16_t motor1, int16_t motor2, int16_t motor3, int16_t mot
 void Can_Send(void){
   while(1){
   //CAN_cmd_chassis(motor_ready[0]->output,0,0,0);
-  CAN_cmd_gimbal(0,0,motor_ready[MOTOR_PITCH].output,0);
-		//CAN_cmd_gimbal(0,0,3000,0);
+		
+		
+  //CAN_cmd_gimbal(0,0,motor_ready[MOTOR_PITCH].output,0);
+	
   //vofa_demo2(motor_data[0].angle,motor_ready[MOTOR_PITCH].output,&huart6);
   vofa_demo3(motor_data[0].angle,motor_ready[MOTOR_PITCH].target,motor_ready[MOTOR_PITCH].output,&huart6);
   }

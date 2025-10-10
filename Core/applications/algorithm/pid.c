@@ -28,6 +28,17 @@ float rad_format(float tar, float real){
 	return tar-real;
 	}
 
+  float rad_format_limit(float tar, float real){
+    if(tar<PI&&real<PI){
+        return tar-real;
+    }else if(tar>PI&&real>PI){
+        return tar-real;
+    }else if(tar>PI&&real<PI){
+        return tar-(real+2*PI);
+    }else{
+        return (tar+2*PI)-real;
+    }
+  }
 void LIMIT_MIN_MAX(float be,float nmax,float mmax){
 	if(be>=mmax){
 		be=mmax;
@@ -72,7 +83,7 @@ float pid_calc_raw(pid_struct_t *pid, float tar, float real)//PID运算函数
   pid->ref = tar;
   pid->fdb = real;
 
-  pid->err[0] = rad_format(pid->ref, pid->fdb);
+  pid->err[0] = rad_format_limit(pid->ref, pid->fdb);
 
 
   pid->p_out  = pid->kp * pid->err[0];
@@ -101,6 +112,6 @@ void gimbal_PID_init()//角度环和速度环的PID初始化,只是初测出来�
 {
 	//pid_init(&gimbal_yaw_speed_pid, 5, 0.01, 0.2, 1000, 1000);//P=30,I=0,D=0
 	//pid_init(&gimbal_yaw_angle_pid, 200, 0.7, 1, 600, 1000);//P=500,I=0,D=1
-	pid_init(&gimbal_yaw_speed_pid, 30, 0, 0, 1000, 1000);//P=30,I=0,D=0
-	pid_init(&gimbal_yaw_angle_pid, 500, 0.07, 1,100, 1000);//P=500,I=0,D=1
+	pid_init(&gimbal_yaw_speed_pid, 15, 0, 0, 1000, 1000);//P=30,I=0,D=0
+	pid_init(&gimbal_yaw_angle_pid, 600, 0.02, 1,100, 1000);//P=500,I=0,D=1
 }

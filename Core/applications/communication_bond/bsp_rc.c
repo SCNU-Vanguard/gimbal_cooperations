@@ -14,6 +14,7 @@ void RC_init(uint8_t *rx1_buf, uint8_t *rx2_buf, uint16_t dma_buf_num)
 
     //失效DMA
     __HAL_DMA_DISABLE(&hdma_usart3_rx);
+    
     while(hdma_usart3_rx.Instance->CR & DMA_SxCR_EN)
     {
         __HAL_DMA_DISABLE(&hdma_usart3_rx);
