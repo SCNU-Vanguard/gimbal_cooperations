@@ -35,7 +35,10 @@ void gimbal_PID_init(void);
 //float pid_calcs(pid_struct_t *pid, float ref, float fdb);
 extern pid_struct_t gimbal_yaw_angle_pid;
 extern pid_struct_t gimbal_yaw_speed_pid;
+extern pid_struct_t gimbal_yaw_speed_pid_return;
+extern pid_struct_t gimbal_yaw_angle_pid_return;
 extern float pid_calc_raw(pid_struct_t *pid, float tar, float real);
+extern float pid_calc_raw_return(pid_struct_t *pid, float tar, float real);
 extern float pid_calc_speed(pid_struct_t *pid, float tar, float real);
 
 #endif

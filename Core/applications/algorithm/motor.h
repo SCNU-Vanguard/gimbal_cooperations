@@ -31,6 +31,7 @@ extern Motor_list motor_data[MOTOR_NUM];
 
 void Motor_Calc(gimbal_control_t *feedback_update);
 void MotorSetTar(Motor_send *motor,float val, ValSet_Type_e type);
+void Motor_return(gimbal_control_t *feedback_update);
 
 double msp(double x, double in_min, double in_max, double out_min, double out_max);
 #endif /* __MOTOR_H */

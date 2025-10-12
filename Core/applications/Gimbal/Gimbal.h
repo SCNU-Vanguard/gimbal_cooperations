@@ -12,13 +12,12 @@
 //电机码盘值最大以及中值
 #define HALF_ECD_RANGE  4096
 #define ECD_RANGE       8191
-
-
+#define OFFSET_ECD     6805 //pitch轴中值
 //电机限幅机械角度
 #define YAW_Limit_Low 2000
 #define YAW_Limit_Hight 6000
-#define PITCH_Limit_Low 2000
-#define PITCH_Limit_Hight -2000
+#define PITCH_Limit_Low 35
+#define PITCH_Limit_Hight -40
 
 //电机编码值转化成角度值
 #ifndef MOTOR_ECD_TO_RAD

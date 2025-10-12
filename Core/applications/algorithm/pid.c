@@ -3,6 +3,8 @@
 float PI=3.1415926;
 pid_struct_t gimbal_yaw_speed_pid;
 pid_struct_t gimbal_yaw_angle_pid;
+pid_struct_t gimbal_yaw_speed_pid_return;
+pid_struct_t gimbal_yaw_angle_pid_return;
 
 void pid_init(pid_struct_t *pid,
               float kp,
@@ -107,6 +109,36 @@ float pid_calc_raw(pid_struct_t *pid, float tar, float real)//PID运算函数
   return pid->output;
 }
 
+                                         //目标      //实际
+float pid_calc_raw_return(pid_struct_t *pid, float tar, float real)//PID运算函数
+{
+  pid->ref = tar;
+  pid->fdb = real;
+
+  pid->err[0] = rad_format(pid->ref, pid->fdb);
+
+
+  pid->p_out  = pid->kp * pid->err[0];
+  pid->i_out += pid->ki * pid->err[0];
+  pid->d_out  = pid->kd * (pid->err[0] - pid->err[1]);
+  pid->err[1] = pid->err[0];
+
+  // LIMIT_MIN_MAX(pid->i_out, -pid->i_max, pid->i_max);
+  if(pid->i_out>=5000){
+  	  pid->i_out=5000;
+    }else if(pid->i_out<=-5000){
+  	  pid->i_out=-5000;
+    }
+  pid->output = pid->p_out + pid->i_out + pid->d_out;
+  // LIMIT_MIN_MAX(pid->output, -pid->out_max, pid->out_max);
+  if(pid->output>=5000){
+	  pid->output=5000;
+  }else if(pid->output<=-5000){
+	  pid->output=-5000;
+  }
+  return pid->output;
+}
+
 
 void gimbal_PID_init()//角度环和速度环的PID初始化,只是初测出来的数据，具体还需要测试
 {
@@ -114,4 +146,6 @@ void gimbal_PID_init()//角度环和速度环的PID初始化,只是初测出来�
 	//pid_init(&gimbal_yaw_angle_pid, 200, 0.7, 1, 600, 1000);//P=500,I=0,D=1
 	pid_init(&gimbal_yaw_speed_pid, 15, 0, 0, 1000, 1000);//P=30,I=0,D=0
 	pid_init(&gimbal_yaw_angle_pid, 600, 0.02, 1,100, 1000);//P=500,I=0,D=1
+  pid_init(&gimbal_yaw_speed_pid_return, 15, 0, 0, 1000, 1000);//P=30,I=0,D=0`
+  pid_init(&gimbal_yaw_angle_pid_return, 600, 0.02, 1,100, 1000);//P=500,I=0,D=1
 }

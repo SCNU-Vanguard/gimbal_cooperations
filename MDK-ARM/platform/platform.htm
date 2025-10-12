@@ -3,7 +3,7 @@
 <title>Static Call Graph - [platform\platform.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image platform\platform.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Fri Oct 10 16:44:59 2025
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Fri Oct 10 21:08:18 2025
 <BR><P>
 <H3>Maximum Stack Usage =        288 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -2574,7 +2574,6 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = __hardfp_fabs
 </UL>
 <BR>[Called By]<UL><LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_detact_calibration
-<LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_feedback_update
 </UL>
 
 <P><STRONG><a name="[1af]"></a>__kernel_poly</STRONG> (Thumb, 248 bytes, Stack size 24 bytes, poly.o(i.__kernel_poly))
@@ -2694,7 +2693,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[ba]"></a>gimbal_angle_limit</STRONG> (Thumb, 418 bytes, Stack size 16 bytes, gimbal.o(i.gimbal_angle_limit))
+<P><STRONG><a name="[ba]"></a>gimbal_angle_limit</STRONG> (Thumb, 386 bytes, Stack size 16 bytes, gimbal.o(i.gimbal_angle_limit))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = gimbal_angle_limit
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MotorSetTar
@@ -2748,6 +2747,7 @@ Global Symbols
 <LI><a href="#[1b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_dsub
 </UL>
 <BR>[Called By]<UL><LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Motor_Calc
+<LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_feedback_update
 </UL>
 
 <P><STRONG><a name="[171]"></a>osDelay</STRONG> (Thumb, 24 bytes, Stack size 16 bytes, cmsis_os.o(i.osDelay))
@@ -3681,12 +3681,12 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[4f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;USART3_IRQHandler
 </UL>
 
-<P><STRONG><a name="[b9]"></a>gimbal_feedback_update</STRONG> (Thumb, 584 bytes, Stack size 32 bytes, gimbal.o(i.gimbal_feedback_update))
-<BR><BR>[Stack]<UL><LI>Max Depth = 64<LI>Call Chain = gimbal_feedback_update &rArr; __aeabi_d2f
+<P><STRONG><a name="[b9]"></a>gimbal_feedback_update</STRONG> (Thumb, 266 bytes, Stack size 32 bytes, gimbal.o(i.gimbal_feedback_update))
+<BR><BR>[Stack]<UL><LI>Max Depth = 144<LI>Call Chain = gimbal_feedback_update &rArr; msp &rArr; __aeabi_dmul
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_remote_control_point
+<LI><a href="#[16c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;msp
 <LI><a href="#[1c3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;motor_ecd_to_angle_change
-<LI><a href="#[1bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_fabs
 <LI><a href="#[155]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
 <LI><a href="#[157]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_d2f
 </UL>
