@@ -145,7 +145,7 @@ void gimbal_PID_init()//角度环和速度环的PID初始化,只是初测出来�
 	//pid_init(&gimbal_yaw_speed_pid, 5, 0.01, 0.2, 1000, 1000);//P=30,I=0,D=0
 	//pid_init(&gimbal_yaw_angle_pid, 200, 0.7, 1, 600, 1000);//P=500,I=0,D=1
 	pid_init(&gimbal_yaw_speed_pid, 15, 0, 0, 1000, 1000);//P=30,I=0,D=0
-	pid_init(&gimbal_yaw_angle_pid, 600, 0.02, 1,100, 1000);//P=500,I=0,D=1
+	pid_init(&gimbal_yaw_angle_pid, 2000, 0.06, 2,100, 1000);//P=500,I=0,D=1
   pid_init(&gimbal_yaw_speed_pid_return, 15, 0, 0, 1000, 1000);//P=30,I=0,D=0`
   pid_init(&gimbal_yaw_angle_pid_return, 600, 0.02, 1,100, 1000);//P=500,I=0,D=1
 }

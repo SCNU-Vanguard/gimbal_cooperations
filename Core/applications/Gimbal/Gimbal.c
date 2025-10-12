@@ -21,7 +21,7 @@ void Gimbal_task(void){
 
     while (1)
     {
-		gimbal_detact_calibration(&gimbal_control);
+				gimbal_detact_calibration(&gimbal_control);
         gimbal_feedback_update(&gimbal_control,&add_yaw,&add_pitch);
         gimbal_angle_limit(&gimbal_control,&add_yaw,&add_pitch);
         //以absolute_angle_set为目标值，absolute_angle（既motor_chassis[0].ecd）为当前值，进行pid串级环的运算，并将值存到motor_ready[0]结构体中
@@ -54,8 +54,8 @@ static fp32 motor_ecd_to_angle_change(uint16_t ecd, uint16_t offset_ecd)
 static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_yaw,float *add_pitch){
 
     //更新电机实时角度
-    feedback_update->gimbal_pitch_motor.motor_gyro=motor_data[0].angle;
-    feedback_update->gimbal_yaw_motor.motor_gyro=motor_data[1].angle;
+    feedback_update->gimbal_pitch_motor.motor_gyro=motor_data[1].angle;
+    feedback_update->gimbal_yaw_motor.motor_gyro=motor_data[0].angle;
 
     //更新姿态角实时角度
     feedback_update->gimbal_pitch_motor.absolute_angle=imu_Angle.Pitch;
@@ -65,7 +65,7 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_
     //更新遥控器实时角度
     feedback_update->gimbal_rc_ctrl=get_remote_control_point();
     *add_yaw=feedback_update->gimbal_rc_ctrl->rc.ch[2];
-    *add_pitch=msp(feedback_update->gimbal_rc_ctrl->rc.ch[3],0,660,0,360);
+    *add_pitch=msp(feedback_update->gimbal_rc_ctrl->rc.ch[3],-660,660,-90,90);
 
     feedback_update->gimbal_pitch_motor.absolute_angle_set=*add_pitch;
     //更新电机目标机械角度
@@ -98,19 +98,18 @@ void gimbal_detact_calibration(gimbal_control_t *gimbal_motort){
         
         static uint16_t int_time=0;
         static uint16_t int_stop_time=0;
-        gimbal_motort->gimbal_pitch_motor.absolute_angle=motor_data[0].angle;
-		gimbal_motort->gimbal_pitch_motor.absolute_angle_set=0;
+        gimbal_motort->gimbal_pitch_motor.motor_gyro=motor_data[1].angle;
+		//gimbal_motort->gimbal_pitch_motor.absolute_angle_set=0;
         MotorSetTar(&motor_ready[0], 0.0f, ABS);  
         MotorSetTar(&motor_ready[1], OFFSET_ECD, ABS);
-		Motor_return(&gimbal_control);
+				Motor_return(gimbal_motort);
 			
         //vTaskDelay(pdMS_TO_TICKS(100)); // 10ms延迟
         int_time++;
-        if(fabs(gimbal_motort->gimbal_pitch_motor.motor_gyro-INIT_PITCH_SET)<GIMBAL_INIT_ANGLE_ERROR&&
-           fabs(gimbal_motort->gimbal_yaw_motor.motor_gyro-INIT_YAW_SET)<GIMBAL_INIT_ANGLE_ERROR){
-            if(int_stop_time<GIMBAL_INIT_STOP_TIME){
+        if(fabs(gimbal_motort->gimbal_pitch_motor.motor_gyro-INIT_PITCH_SET)<GIMBAL_INIT_ANGLE_ERROR){
+            //if(int_stop_time<GIMBAL_INIT_STOP_TIME){
             int_stop_time++;
-            }
+            //}
            }
         //此处为源码的逻辑，但觉得int_time无需重复累加两次，故删去
         //    else{
@@ -123,7 +122,7 @@ void gimbal_detact_calibration(gimbal_control_t *gimbal_motort){
         //    if(int_time < GIMBAL_INIT_TIME && int_stop_time < GIMBAL_INIT_STOP_TIME){
         //     return;
         //    }else{
-        if(int_time > GIMBAL_INIT_TIME && int_stop_time < GIMBAL_INIT_STOP_TIME){
+        if(int_time > GIMBAL_INIT_TIME && int_stop_time > GIMBAL_INIT_STOP_TIME){
             //信号量释放
             xSemaphoreGive(g_xSemTicks);
             int_stop_time = 0;
@@ -205,6 +204,8 @@ void gimbal_angle_limit(gimbal_control_t *gimbal_motort,float *add_yaw,float *ad
     }else{
 				MotorSetTar(&motor_ready[1],gimbal_motort->gimbal_pitch_motor.absolute_angle_set,ABS);
     }
+}else{
+				MotorSetTar(&motor_ready[1],gimbal_motort->gimbal_pitch_motor.absolute_angle_set,ABS);
 }
 
 

@@ -54,5 +54,9 @@ platform\can_receive.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.
 platform\can_receive.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
 platform\can_receive.o: ../Core/applications/communication_bond/remote_control.h
 platform\can_receive.o: ../Core/applications/communication_bond/bsp_rc.h
+platform\can_receive.o: ../Core/applications/algorithm/imu.h
+platform\can_receive.o: ../Core/Inc/gpio.h
+platform\can_receive.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
+platform\can_receive.o: ../Core/applications/communication_bond/BMI088driver.h
 platform\can_receive.o: ../Core/Instance/vofa.h
 platform\can_receive.o: ../Core/Inc/usart.h
