@@ -34,26 +34,16 @@ void Motor_Calc(gimbal_control_t *feedback_update)
 	static float tar=0,real=0;
 
 	//yaw轴计算
-	tar=msp(motor_ready[0].target,0,8191,-pi,pi);
-	real=msp(feedback_update->gimbal_yaw_motor.absolute_angle,0,8191,-pi,pi);
-    //过零点处理
-	// while(tar-real > PI)
-	//  	real += 2 * PI ;
-	// while(tar-real < -PI)
-	//  	real -= 2 * PI ;
+	tar=msp(motor_ready[0].target,-90,+90,-pi,pi);
+	real=msp(feedback_update->gimbal_yaw_motor.absolute_angle,-90,+90,-pi,pi);
 	motor_ready[MOTOR_YAW].output_Position=pid_calc_raw(&gimbal_yaw_angle_pid,tar,real);
     motor_ready[MOTOR_YAW].output=pid_calc_speed(&gimbal_yaw_speed_pid,motor_ready[MOTOR_YAW].output_Position,motor_data[MOTOR_YAW].speed);
 
 	//pitch轴计算
 	tar=msp(motor_ready[1].target,-90,+90,-pi,pi);
 	real=msp(feedback_update->gimbal_pitch_motor.absolute_angle,-90,+90,-pi,pi);
-    //过零点处理
-	// while(tar-real > 4096)
-	//  	real += 8191 ;
-	// while(tar-real < -4096)
-	//  	real -= 8191 ;
 	motor_ready[MOTOR_PITCH].output_Position=pid_calc_raw(&gimbal_yaw_angle_pid,tar,real);
-  motor_ready[MOTOR_PITCH].output=pid_calc_speed(&gimbal_yaw_speed_pid,motor_ready[MOTOR_PITCH].output_Position,motor_data[MOTOR_PITCH].speed);
+  	motor_ready[MOTOR_PITCH].output=pid_calc_speed(&gimbal_yaw_speed_pid,motor_ready[MOTOR_PITCH].output_Position,motor_data[MOTOR_PITCH].speed);
 
 }
 
@@ -62,9 +52,15 @@ void Motor_return(gimbal_control_t *feedback_update){
 		return;
 	}
 	static float tar=0,real=0;
+	//yaw轴计算
+	tar=msp(motor_ready[0].target,0,8191,-pi,pi);
+	real=msp(feedback_update->gimbal_pitch_motor.motor_gyro,0,8191,-pi,pi);
+	motor_ready[MOTOR_YAW].output_Position=pid_calc_raw_return(&gimbal_yaw_angle_pid_return,tar,real);
+  motor_ready[MOTOR_YAW].output=pid_calc_speed(&gimbal_yaw_speed_pid_return,motor_ready[MOTOR_YAW].output_Position,motor_data[MOTOR_YAW].speed);
+
 	//pitch轴计算
 	tar=msp(motor_ready[1].target,0,8191,-pi,pi);
 	real=msp(feedback_update->gimbal_pitch_motor.motor_gyro,0,8191,-pi,pi);
 	motor_ready[MOTOR_PITCH].output_Position=pid_calc_raw_return(&gimbal_yaw_angle_pid_return,tar,real);
-  motor_ready[MOTOR_PITCH].output=pid_calc_speed(&gimbal_yaw_speed_pid_return,motor_ready[MOTOR_PITCH].output_Position,motor_data[MOTOR_PITCH].speed);
+  	motor_ready[MOTOR_PITCH].output=pid_calc_speed(&gimbal_yaw_speed_pid_return,motor_ready[MOTOR_YAW].output_Position,motor_data[MOTOR_YAW].speed);
 }

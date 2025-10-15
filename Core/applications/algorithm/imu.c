@@ -5,16 +5,17 @@
 #include "FreeRTOS.h"
 #include "semphr.h"     // 信号量相关类型和函数声明（包含 SemaphoreHandle_t 定义）
 #include "Gimbal.h"
+#include "MahonyAHRS.h"
 #define kp 				25.00f
 #define ki 				0.005f
-#define cycle_T 		0.005f//200hz
+#define cycle_T 		0.005f//200hz 0.005
 #define half_T 			0.0025f
 
 int16_t Ax,Ay,Az,Gx,Gy,Gz;
-fp32 gyro[3], accel[3], temp;
+float gyro[3], accel[3], temp;
 param_imu imu_data;
 param_Angle imu_Angle;
-offset imu_offset;
+param_Angle imu_offset;
 float q[4] = {1.0,0.0,0.0,0.0};//四元数数组
 float exInt = 0.0 ,eyInt = 0.0 ,ezInt = 0.0 ;
 
@@ -102,34 +103,59 @@ void IMU_AHRSupdate(param_imu* imu_temp)
 
 
 
-uint8_t IMU_Offset(param_imu *value,offset *set){
-	static float tempgx=0,tempgy=0,tempgz=0;
-	static float tempax=0,tempay=0,tempaz=0;
+// uint8_t IMU_Offset(param_imu *value,offset *set){
+// 	static float tempgx=0,tempgy=0,tempgz=0;
+// 	static float tempax=0,tempay=0,tempaz=0;
+// 	static uint16_t cnt_a=0;
+// 	if(cnt_a==0){
+// 		tempgx=0;
+// 		tempgy=0;
+// 		tempgz=0;
+// 		tempax=0;
+// 		tempay=0;
+// 		tempaz=0;
+// 		cnt_a=1;
+
+// 	}
+// 	tempax+=value->AX;
+// 	tempay+=value->AY;
+// 	tempaz+=value->AZ;
+// 	tempgx+=value->GX;
+// 	tempgy+=value->GY;
+// 	tempgz+=value->GZ;
+	
+// 	if(cnt_a==100){
+// 		set->aX=tempax/cnt_a;
+// 		set->aY=tempay/cnt_a;
+// 		set->aZ=tempaz/cnt_a;
+// 		set->gX=tempgx/cnt_a;
+// 		set->gY=tempgy/cnt_a;
+// 		set->gZ=tempgz/cnt_a;
+// 		cnt_a = 0;
+// 		return 1;
+// 	}
+// 	cnt_a++;
+//   return 0;
+// }
+
+uint8_t IMU_Offset(param_Angle *value,param_Angle *set){
+	static float temppitch=0,temproll=0,tempyaw=0;
 	static uint16_t cnt_a=0;
 	if(cnt_a==0){
-		tempgx=0;
-		tempgy=0;
-		tempgz=0;
-		tempax=0;
-		tempay=0;
-		tempaz=0;
+		temppitch=0;
+		temproll=0;
+		tempyaw=0;
 		cnt_a=1;
 
 	}
-	tempax+=value->AX;
-	tempay+=value->AY;
-	tempaz+=value->AZ;
-	tempgx+=value->GX;
-	tempgy+=value->GY;
-	tempgz+=value->GZ;
+	temppitch+=value->Pitch;
+	temproll+=value->Roll;
+	tempyaw+=value->Yaw;
 	
-	if(cnt_a==1000){
-		set->aX=tempax/cnt_a;
-		set->aY=tempay/cnt_a;
-		set->aZ=tempaz/cnt_a;
-		set->gX=tempgx/cnt_a;
-		set->gY=tempgy/cnt_a;
-		set->gZ=tempgz/cnt_a;
+	if(cnt_a==100){
+		set->Pitch=temppitch/cnt_a;
+		set->Roll=temproll/cnt_a;
+		set->Yaw=tempyaw/cnt_a;
 		cnt_a = 0;
 		return 1;
 	}
@@ -137,16 +163,28 @@ uint8_t IMU_Offset(param_imu *value,offset *set){
   return 0;
 }
 
-void IMU_Calibration(void){
-	gyro[0]-=imu_offset.gX;
-	gyro[1]-=imu_offset.gY;
-	gyro[2]-=imu_offset.gZ;
+// void IMU_Calibration(void){
+// 	gyro[0]-=imu_offset.gX;
+// 	gyro[1]-=imu_offset.gY;
+// 	gyro[2]-=imu_offset.gZ;
 
-	accel[0]-=imu_offset.aX;
-	accel[1]-=imu_offset.aY;
-	accel[2]-=imu_offset.aZ;
+// 	accel[0]-=imu_offset.aX;
+// 	accel[1]-=imu_offset.aY;
+// 	accel[2]-=imu_offset.aZ;
+// 	if(GET_FLAG(calibration_OFFSET)){
+// 		if(IMU_Offset(&imu_data,&imu_offset)){
+// 			SENSER_FLAG_RESET(calibration_OFFSET);
+// 		}
+// 	}
+// }
+
+void IMU_Calibration(void){
+	imu_Angle.Pitch-=imu_offset.Pitch;
+	imu_Angle.Roll-=imu_offset.Roll;
+	//imu_Angle.Yaw-=imu_offset.Yaw;
+	imu_Angle.Yaw-=1.527;
 	if(GET_FLAG(calibration_OFFSET)){
-		if(IMU_Offset(&imu_data,&imu_offset)){
+		if(IMU_Offset(&imu_Angle,&imu_offset)){
 			SENSER_FLAG_RESET(calibration_OFFSET);
 		}
 	}
@@ -159,15 +197,16 @@ void INS(void)
 	//设置信号量
 	
 	IMU_GetValues();
-	IMU_Calibration();
-	IMU_AHRSupdate(&imu_data);
+	//IMU_Calibration();
+	//IMU_AHRSupdate(&imu_data);
+	MahonyAHRSupdateIMU(q, gyro, accel);
 
 	imu_Angle.Pitch = asin(-2 * q[1] * q[3] + 2 * q[0]* q[2])* 57.2957;
 	imu_Angle.Roll  = atan2(2 * q[2] * q[3] + 2 * q[0] * q[1], -2 * q[1] * q[1] - 2 * q[2]* q[2] + 1)* 57.2957;
 
-	imu_Angle.Yaw  += imu_data.GZ* 57.2957* cycle_T* 4;//由于在静止状态下z轴方向本身就有重力加速度，所以不用将加速度计和陀螺仪的结果融合，直接对角速度进行积分（这里只有乘上4后才会变得准一些，具体原因尚不清楚）
-		vTaskDelay(pdMS_TO_TICKS(10)); // 10ms延迟
-    
+	//imu_Angle.Yaw  += imu_data.GZ* 57.2957* cycle_T* 4;//由于在静止状态下z轴方向本身就有重力加速度，所以不用将加速度计和陀螺仪的结果融合，直接对角速度进行积分（这里只有乘上4后才会变得准一些，具体原因尚不清楚）
+	imu_Angle.Yaw=atan2f(2*q[1]*q[2]+2*q[0]*q[3],2*(q[0]*q[0]+q[1]*q[1])-1)*57.2957-0.1;
+  IMU_Calibration();
 }
 
 	}

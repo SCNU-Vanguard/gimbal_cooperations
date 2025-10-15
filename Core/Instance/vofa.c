@@ -93,6 +93,7 @@ void vofa_demo2(float data1, float data2, UART_HandleTypeDef *huart)
   // Call the function to send the frame tail
   VOFA_Send_Frametail(huart);
 }
+
 void vofa_demo3(float data1, float data2, float data3 , UART_HandleTypeDef *huart)
 {
 

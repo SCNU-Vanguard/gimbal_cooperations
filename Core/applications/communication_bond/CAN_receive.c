@@ -188,9 +188,10 @@ void Can_Send(void){
   //CAN_cmd_chassis(motor_ready[0]->output,0,0,0);
 		
 		
-  CAN_cmd_gimbal(motor_ready[MOTOR_PITCH].output,motor_ready[MOTOR_PITCH].output,motor_ready[MOTOR_PITCH].output,motor_ready[MOTOR_PITCH].output);
-	
+  // CAN_cmd_gimbal(motor_ready[MOTOR_PITCH].output,motor_ready[MOTOR_PITCH].output,motor_ready[MOTOR_PITCH].output,motor_ready[MOTOR_PITCH].output);
+	//CAN_cmd_gimbal(motor_ready[MOTOR_YAW].output,0,0,0);
   //vofa_demo2(motor_data[0].angle,motor_ready[MOTOR_PITCH].output,&huart6);
-  vofa_demo3(imu_Angle.Pitch,motor_ready[MOTOR_PITCH].target,motor_ready[MOTOR_PITCH].output,&huart6);
+  //vofa_demo3(imu_Angle.Yaw,motor_ready[MOTOR_YAW].target,motor_ready[MOTOR_YAW].output,&huart6);
+		vofa_demo3(imu_Angle.Yaw,(float)motor_data[0].angle,motor_ready[MOTOR_YAW].output,&huart6);
   }
 }

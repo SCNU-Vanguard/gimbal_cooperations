@@ -55,3 +55,4 @@ platform\imu.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
 platform\imu.o: ../Core/applications/Gimbal/Gimbal.h
 platform\imu.o: ../Core/applications/communication_bond/remote_control.h
 platform\imu.o: ../Core/applications/communication_bond/bsp_rc.h
+platform\imu.o: ..\Core\applications\algorithm\MahonyAHRS.h
