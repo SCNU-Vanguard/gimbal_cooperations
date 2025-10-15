@@ -37,6 +37,14 @@ float fast_sqrt(float x)
 void IMU_GetValues(void)
 {
 	BMI088_read(gyro, accel, &temp);
+for ( int i = 0; i < 3; i ++ )
+	{
+		gyro[i] = gyro[i]*BMI088_GYRO_500_SEN ;
+		accel[i] = accel[i]*BMI088_ACCEL_3G_SEN ;
+	}
+	gyro[1]-=-4895900 / 208192 * BMI088_GYRO_500_SEN;
+	gyro[2]-=1707958 / 208192 * BMI088_GYRO_500_SEN;
+	accel[1]-=-126158552 / 208192 * BMI088_ACCEL_3G_SEN;
 
 	imu_data.AX = ((float)accel[0])/2048;
 	imu_data.AY = ((float)accel[1])/2048;
@@ -201,12 +209,15 @@ void INS(void)
 	//IMU_AHRSupdate(&imu_data);
 	MahonyAHRSupdateIMU(q, gyro, accel);
 
-	imu_Angle.Pitch = asin(-2 * q[1] * q[3] + 2 * q[0]* q[2])* 57.2957;
-	imu_Angle.Roll  = atan2(2 * q[2] * q[3] + 2 * q[0] * q[1], -2 * q[1] * q[1] - 2 * q[2]* q[2] + 1)* 57.2957;
+	// imu_Angle.Pitch = asin(-2 * q[1] * q[3] + 2 * q[0]* q[2])* 57.2957;
+	// imu_Angle.Roll  = atan2(2 * q[2] * q[3] + 2 * q[0] * q[1], -2 * q[1] * q[1] - 2 * q[2]* q[2] + 1)* 57.2957;
 
 	//imu_Angle.Yaw  += imu_data.GZ* 57.2957* cycle_T* 4;//由于在静止状态下z轴方向本身就有重力加速度，所以不用将加速度计和陀螺仪的结果融合，直接对角速度进行积分（这里只有乘上4后才会变得准一些，具体原因尚不清楚）
-	imu_Angle.Yaw=atan2f(2*q[1]*q[2]+2*q[0]*q[3],2*(q[0]*q[0]+q[1]*q[1])-1)*57.2957-0.1;
-  IMU_Calibration();
+	// imu_Angle.Yaw=atan2f(2*q[1]*q[2]+2*q[0]*q[3],2*(q[0]*q[0]+q[1]*q[1])-1)*57.2957-0.1;
+	imu_Angle.Pitch = asin(-2 * q[1] * q[3] + 2 * q[0]* q[2])+3.1415926535f;
+	imu_Angle.Roll  = atan2(2 * q[2] * q[3] + 2 * q[0] * q[1], -2 * q[1] * q[1] - 2 * q[2]* q[2] + 1)+3.1415926535f;
+	imu_Angle.Yaw=atan2f(2*q[1]*q[2]+2*q[0]*q[3],2*(q[0]*q[0]+q[1]*q[1])-1)+3.1415926535f;
+//   IMU_Calibration();
 }
 
 	}

@@ -54,7 +54,7 @@ void Motor_return(gimbal_control_t *feedback_update){
 	static float tar=0,real=0;
 	//yaw轴计算
 	tar=msp(motor_ready[0].target,0,8191,-pi,pi);
-	real=msp(feedback_update->gimbal_pitch_motor.motor_gyro,0,8191,-pi,pi);
+	real=msp(feedback_update->gimbal_yaw_motor.motor_gyro,0,8191,-pi,pi);
 	motor_ready[MOTOR_YAW].output_Position=pid_calc_raw_return(&gimbal_yaw_angle_pid_return,tar,real);
   motor_ready[MOTOR_YAW].output=pid_calc_speed(&gimbal_yaw_speed_pid_return,motor_ready[MOTOR_YAW].output_Position,motor_data[MOTOR_YAW].speed);
 

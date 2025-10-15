@@ -28,10 +28,10 @@
 //---------------------------------------------------------------------------------------------------
 // Variable definitions
 
-//volatile float twoKp = twoKpDef;				// 2 * proportional gain (Kp)
-//volatile float twoKi = twoKiDef;					// 2 * integral gain (Ki)
-volatile float twoKp=1.0f;
-volatile float twoKi=0.001f;
+volatile float twoKp = twoKpDef;				// 2 * proportional gain (Kp)
+volatile float twoKi = twoKiDef;					// 2 * integral gain (Ki)
+// volatile float twoKp=1.0f;
+// volatile float twoKi=0.001f;
 //volatile float q0 = 1.0f, q1 = 0.0f, q2 = 0.0f, q3 = 0.0f;					// quaternion of sensor frame relative to auxiliary frame
 volatile float integralFBx = 0.0f, integralFBy = 0.0f, integralFBz = 0.0f;// integral error terms scaled by Ki
 

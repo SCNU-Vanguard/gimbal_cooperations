@@ -100,13 +100,13 @@ void gimbal_detact_calibration(gimbal_control_t *gimbal_motort){
         static uint16_t int_time=0;
         static uint16_t int_stop_time=0;
         gimbal_motort->gimbal_pitch_motor.motor_gyro=motor_data[1].angle;
-		//gimbal_motort->gimbal_pitch_motor.absolute_angle_set=0;
+				gimbal_motort->gimbal_yaw_motor.motor_gyro=motor_data[0].angle;
         MotorSetTar(&motor_ready[0], 1941, ABS);  
         MotorSetTar(&motor_ready[1], OFFSET_ECD, ABS);
-		Motor_return(gimbal_motort);
+				Motor_return(gimbal_motort);
 		
         int_time++;
-        if(fabs(gimbal_motort->gimbal_pitch_motor.motor_gyro-INIT_PITCH_SET)<GIMBAL_INIT_ANGLE_ERROR){
+        if(fabs(gimbal_motort->gimbal_yaw_motor.motor_gyro-1941)<GIMBAL_INIT_ANGLE_ERROR){
             //if(int_stop_time<GIMBAL_INIT_STOP_TIME){
             int_stop_time++;
             //}
@@ -122,13 +122,13 @@ void gimbal_detact_calibration(gimbal_control_t *gimbal_motort){
         //    if(int_time < GIMBAL_INIT_TIME && int_stop_time < GIMBAL_INIT_STOP_TIME){
         //     return;
         //    }else{
-        //if(int_time > GIMBAL_INIT_TIME && int_stop_time < GIMBAL_INIT_STOP_TIME){
+        if(int_time > GIMBAL_INIT_TIME && int_stop_time < GIMBAL_INIT_STOP_TIME){
             //信号量释放
             xSemaphoreGive(g_xSemTicks);
             int_stop_time = 0;
             int_time = 0;
             GIMBAL_FLAG_RESET(GIMBAL_OFFSET_FLAG);
-           //}
+           }
        
     }
 
@@ -164,15 +164,18 @@ void gimbal_angle_limit(gimbal_control_t *gimbal_motort,float *add_yaw,float *ad
 
     //yaw
     if(*add_yaw<0){
+        if(*add_yaw<=-32){
         if(gimbal_motort->gimbal_yaw_motor.absolute_angle<=-32){
             MotorSetTar(&motor_ready[0],PITCH_Limit_Hight,ABS);
-
+        }
     }else{
         MotorSetTar(&motor_ready[0],gimbal_motort->gimbal_yaw_motor.absolute_angle_set,ABS);
     }
     }else if(*add_yaw>0){
+        if(*add_yaw>=35){
         if(gimbal_motort->gimbal_yaw_motor.absolute_angle>=35){
                 MotorSetTar(&motor_ready[0],PITCH_Limit_Low,ABS);
+        }
     }else{
 				MotorSetTar(&motor_ready[0],gimbal_motort->gimbal_yaw_motor.absolute_angle_set,ABS);
     }
