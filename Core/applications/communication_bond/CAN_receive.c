@@ -192,6 +192,7 @@ void Can_Send(void){
 	CAN_cmd_gimbal(motor_ready[MOTOR_YAW].output,0,0,0);
   //vofa_demo2(motor_data[0].angle,motor_ready[MOTOR_PITCH].output,&huart6);
   //vofa_demo3(imu_Angle.Yaw,motor_ready[MOTOR_YAW].target,motor_ready[MOTOR_YAW].output,&huart6);
-		vofa_demo3(imu_Angle.Yaw,motor_ready[MOTOR_YAW].target,motor_ready[MOTOR_YAW].output,&huart6);
+		// vofa_demo3(imu_Angle.Yaw,motor_ready[MOTOR_YAW].target,motor_ready[MOTOR_YAW].output,&huart6);
+    vofa_demo3(accel[0],gyro[0],gyro[1],&huart6);
   }
 }

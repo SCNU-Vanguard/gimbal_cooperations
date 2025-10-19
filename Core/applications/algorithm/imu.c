@@ -6,6 +6,10 @@
 #include "semphr.h"     // 信号量相关类型和函数声明（包含 SemaphoreHandle_t 定义）
 #include "Gimbal.h"
 #include "MahonyAHRS.h"
+#include "bsp_dwt.h"
+#include "QuaternionEKF.h"
+#include "kalman_filter.h"
+
 #define kp 				25.00f
 #define ki 				0.005f
 #define cycle_T 		0.005f//200hz 0.005
@@ -13,6 +17,7 @@
 
 int16_t Ax,Ay,Az,Gx,Gy,Gz;
 float gyro[3], accel[3], temp;
+float insq[4];
 param_imu imu_data;
 param_Angle imu_Angle;
 param_Angle imu_offset;
@@ -37,22 +42,20 @@ float fast_sqrt(float x)
 void IMU_GetValues(void)
 {
 	BMI088_read(gyro, accel, &temp);
-for ( int i = 0; i < 3; i ++ )
-	{
-		gyro[i] = gyro[i]*BMI088_GYRO_500_SEN ;
-		accel[i] = accel[i]*BMI088_ACCEL_3G_SEN ;
-	}
+	#ifdef Mahony_AHRS_DEBUG
 	gyro[1]-=-4895900 / 208192 * BMI088_GYRO_500_SEN;
 	gyro[2]-=1707958 / 208192 * BMI088_GYRO_500_SEN;
 	accel[1]-=-126158552 / 208192 * BMI088_ACCEL_3G_SEN;
+	#endif 
+	 float init_quaternion[4] = { 0 };
+//   EKF_Quaternion_Init(init_quaternion);
+  IMU_QuaternionEKF_Init(init_quaternion,
+			 10,
+			 0.001f,//0.001f,
+			 1000000,//1000000,
+			 0.9996f,
+			 0.000399f);
 
-	imu_data.AX = ((float)accel[0])/2048;
-	imu_data.AY = ((float)accel[1])/2048;
-	imu_data.AZ = ((float)accel[2])/2048;
-
-	imu_data.GX = ((float)gyro[0])*0.001064;//将角度转成弧度
-	imu_data.GY = ((float)gyro[1])*0.001064;
-	imu_data.GZ = ((float)gyro[2])*0.001064;
 	}
 
 void IMU_AHRSupdate(param_imu* imu_temp)
@@ -200,24 +203,34 @@ void IMU_Calibration(void){
 
 void INS(void)
 {
+	static uint32_t INS_dwt_count = 0;
+	float ins_dt = 0.0f;
+	//云台归中完成获取信号量
 	xSemaphoreTake(g_xSemTicks, portMAX_DELAY);
 	while(1){
-	//设置信号量
-	
+	ins_dt = DWT_GetDeltaT(&INS_dwt_count);
 	IMU_GetValues();
-	//IMU_Calibration();
-	//IMU_AHRSupdate(&imu_data);
+
+	// //IMU_Calibration();
+	// IMU_AHRSupdate(&imu_data);
 	MahonyAHRSupdateIMU(q, gyro, accel);
+	IMU_QuaternionEKF_Update(gyro[0], gyro[1], gyro[2], accel[0], accel[1], accel[2], ins_dt);
+ 	q[0] = q[0] * QEKF_INS.accLPFcoef + QEKF_INS.q[0] * (1 - QEKF_INS.accLPFcoef);
+  	q[1] = q[0] * QEKF_INS.accLPFcoef + QEKF_INS.q[1] * (1 - QEKF_INS.accLPFcoef);
+    q[2] = q[0] * QEKF_INS.accLPFcoef + QEKF_INS.q[2] * (1 - QEKF_INS.accLPFcoef);
+    q[3] = q[0] * QEKF_INS.accLPFcoef + QEKF_INS.q[3] * (1 - QEKF_INS.accLPFcoef);
 
-	// imu_Angle.Pitch = asin(-2 * q[1] * q[3] + 2 * q[0]* q[2])* 57.2957;
-	// imu_Angle.Roll  = atan2(2 * q[2] * q[3] + 2 * q[0] * q[1], -2 * q[1] * q[1] - 2 * q[2]* q[2] + 1)* 57.2957;
+	//转换成360度
+	imu_Angle.Pitch = asin(-2 * q[1] * q[3] + 2 * q[0]* q[2])* 57.2957;
+	imu_Angle.Roll  = atan2(2 * q[2] * q[3] + 2 * q[0] * q[1], -2 * q[1] * q[1] - 2 * q[2]* q[2] + 1)* 57.2957;
+	imu_Angle.Yaw=atan2f(2*q[1]*q[2]+2*q[0]*q[3],2*(q[0]*q[0]+q[1]*q[1])-1)*57.2957;
 
-	//imu_Angle.Yaw  += imu_data.GZ* 57.2957* cycle_T* 4;//由于在静止状态下z轴方向本身就有重力加速度，所以不用将加速度计和陀螺仪的结果融合，直接对角速度进行积分（这里只有乘上4后才会变得准一些，具体原因尚不清楚）
-	// imu_Angle.Yaw=atan2f(2*q[1]*q[2]+2*q[0]*q[3],2*(q[0]*q[0]+q[1]*q[1])-1)*57.2957-0.1;
-	imu_Angle.Pitch = asin(-2 * q[1] * q[3] + 2 * q[0]* q[2])+3.1415926535f;
-	imu_Angle.Roll  = atan2(2 * q[2] * q[3] + 2 * q[0] * q[1], -2 * q[1] * q[1] - 2 * q[2]* q[2] + 1)+3.1415926535f;
-	imu_Angle.Yaw=atan2f(2*q[1]*q[2]+2*q[0]*q[3],2*(q[0]*q[0]+q[1]*q[1])-1)+3.1415926535f;
-//   IMU_Calibration();
+	// imu_Angle.Yaw  += imu_data.GZ* 57.2957* cycle_T* 4;//由于在静止状态下z轴方向本身就有重力加速度，所以不用将加速度计和陀螺仪的结果融合，直接对角速度进行积分（这里只有乘上4后才会变得准一些，具体原因尚不清楚）
+	
+	//弧度制
+	// imu_Angle.Pitch = asin(-2 * q[1] * q[3] + 2 * q[0]* q[2]);
+	// imu_Angle.Roll  = atan2(2 * q[2] * q[3] + 2 * q[0] * q[1], -2 * q[1] * q[1] - 2 * q[2]* q[2] + 1);
+	// imu_Angle.Yaw=atan2f(2*q[1]*q[2]+2*q[0]*q[3],2*(q[0]*q[0]+q[1]*q[1])-1);
 }
 
 	}

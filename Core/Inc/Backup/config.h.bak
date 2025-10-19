@@ -12,4 +12,5 @@ typedef enum
 #define MOTOR_YAW 0
 #define MOTOR_PITCH 1
 
+#define CANBUS_TASK_PERIOD 1
 #endif  // CONFIG_H  // 结束保护

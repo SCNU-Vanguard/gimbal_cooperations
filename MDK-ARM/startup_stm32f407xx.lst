@@ -850,10 +850,11 @@ ARM Macro Assembler    Page 14
 
 
  -I../Drivers/CMSIS/Include -I.\RTE\_platform -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5
-.4.0\CMSIS\Core\Include -IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.8.0\Drivers\
-CMSIS\Device\ST\STM32F4xx\Include --predefine="__UVISION_VERSION SETA 526" --pr
-edefine="_RTE_ SETA 1" --predefine="STM32F407xx SETA 1" --list=startup_stm32f40
-7xx.lst startup_stm32f407xx.s
+.4.0\CMSIS\Core\Include -IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\DSP\Include
+ -IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.8.0\Drivers\CMSIS\Device\ST\STM32F4
+xx\Include --predefine="__UVISION_VERSION SETA 526" --predefine="_RTE_ SETA 1" 
+--predefine="STM32F407xx SETA 1" --list=startup_stm32f407xx.lst startup_stm32f4
+07xx.s
 
 
 

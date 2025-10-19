@@ -56,3 +56,15 @@ platform\imu.o: ../Core/applications/Gimbal/Gimbal.h
 platform\imu.o: ../Core/applications/communication_bond/remote_control.h
 platform\imu.o: ../Core/applications/communication_bond/bsp_rc.h
 platform\imu.o: ..\Core\applications\algorithm\MahonyAHRS.h
+platform\imu.o: ..\Core\applications\bsp\bsp_dwt.h
+platform\imu.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
+platform\imu.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h
+platform\imu.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
+platform\imu.o: ..\Core\applications\algorithm\QuaternionEKF.h
+platform\imu.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
+platform\imu.o: ..\Core\applications\algorithm\kalman_filter.h
+platform\imu.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+platform\imu.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
+platform\imu.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\DSP\Include\arm_math.h
+platform\imu.o: ../Drivers/CMSIS/Include/core_cm4.h
+platform\imu.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

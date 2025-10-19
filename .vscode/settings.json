@@ -16,7 +16,8 @@
         "pid.h": "c",
         "gpio.h": "c",
         "stm32f4xx.h": "c",
-        "errorhandel.h": "c"
+        "errorhandel.h": "c",
+        "arm_math_types.h": "c"
     },
     "cmake.sourceDirectory": "E:/RM/gimbal_cooperations/Drivers/CMSIS/NN",
     "cmake.allowUnsupportedPresetsVersions": true,

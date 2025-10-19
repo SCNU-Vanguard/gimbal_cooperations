@@ -46,6 +46,7 @@ extern uint8_t   SENSER_OFFSET_FLAG; //标志位组
 
 			extern uint16_t cnt_a;
 
+			extern float gyro[3], accel[3];
 			
 void IMU_getEuleranAngles(void);
 
