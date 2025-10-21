@@ -40,6 +40,7 @@
 #include "remote_control.h"
 #include "usbd_cdc_if.h"
 #include "FreeRTOS.h"
+#include "bsp_dwt.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -76,13 +77,13 @@ void MX_FREERTOS_Init(void);
 
 //定时器2中断回调函数，获取欧拉角（TIM2 callback，get Euler angles）
 
- void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-	 int16_t a;
-// 	if (htim==&htim2){
-// 		IMU_getEuleranAngles();
-// 		__HAL_TIM_CLEAR_IT(&htim2, TIM_IT_UPDATE);
-// 	}
- }
+// void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+//	 int16_t a;
+//// 	if (htim==&htim2){
+//// 		IMU_getEuleranAngles();
+//// 		__HAL_TIM_CLEAR_IT(&htim2, TIM_IT_UPDATE);
+//// 	}
+// }
 
 
 /* USER CODE END 0 */
@@ -124,6 +125,7 @@ int main(void)
   MX_CAN1_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
+  DWT_Init(168);
 
   //BMI088初始化
 while(BMI088_init())

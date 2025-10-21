@@ -64,6 +64,7 @@ platform\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 platform\main.o: ../Core/Inc/gpio.h
 platform\main.o: ../Core/applications/communication_bond/BMI088driver.h
 platform\main.o: ../Core/Instance/struct_typedef.h
+platform\main.o: ../Core/applications/algorithm/INS.h
 platform\main.o: ../Core/applications/algorithm/imu.h
 platform\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 platform\main.o: ../Core/Instance/vofa.h
@@ -81,3 +82,5 @@ platform\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.
 platform\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h
 platform\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h
 platform\main.o: ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h
+platform\main.o: ../Core/applications/bsp/bsp_dwt.h
+platform\main.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h

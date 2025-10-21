@@ -38,5 +38,6 @@ platform\bmi088driver.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.
 platform\bmi088driver.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd.h
 platform\bmi088driver.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usb.h
 platform\bmi088driver.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd_ex.h
+platform\bmi088driver.o: ../Core/applications/algorithm/INS.h
 platform\bmi088driver.o: ..\Core\applications\communication_bond\BMI088reg.h
 platform\bmi088driver.o: ..\Core\applications\communication_bond\BMI088Middleware.h

@@ -21,7 +21,7 @@
 #include "main.h"
 #include "imu.h"
 #include "vofa.h"
-
+#include "QuaternionEKF.h"
 
 motor_measure_t motor_chassis[7];
 
@@ -193,6 +193,6 @@ void Can_Send(void){
   //vofa_demo2(motor_data[0].angle,motor_ready[MOTOR_PITCH].output,&huart6);
   //vofa_demo3(imu_Angle.Yaw,motor_ready[MOTOR_YAW].target,motor_ready[MOTOR_YAW].output,&huart6);
 		// vofa_demo3(imu_Angle.Yaw,motor_ready[MOTOR_YAW].target,motor_ready[MOTOR_YAW].output,&huart6);
-    vofa_demo3(accel[0],gyro[0],gyro[1],&huart6);
+    vofa_demo3(QEKF_INS.Pitch,QEKF_INS.Roll,QEKF_INS.Yaw,&huart6);
   }
 }

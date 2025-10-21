@@ -6,6 +6,7 @@
 #include "CAN_receive.h"
 #include <math.h>
 #include "CAN_receive.h"
+#include "QuaternionEKF.h"
 
 uint8_t   GIMBAL_OFFSET_FLAG=1; //云台标志位
 gimbal_control_t gimbal_control;
@@ -58,8 +59,10 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_
     feedback_update->gimbal_yaw_motor.motor_gyro=motor_data[0].angle;
 
     //更新姿态角实时角度
-    feedback_update->gimbal_pitch_motor.absolute_angle=imu_Angle.Pitch;
-    feedback_update->gimbal_yaw_motor.absolute_angle=imu_Angle.Yaw;
+    //feedback_update->gimbal_pitch_motor.absolute_angle=imu_Angle.Pitch;
+    //feedback_update->gimbal_yaw_motor.absolute_angle=imu_Angle.Yaw;
+	feedback_update->gimbal_pitch_motor.absolute_angle=QEKF_INS.Pitch;
+    feedback_update->gimbal_yaw_motor.absolute_angle=QEKF_INS.Yaw;
 
 
     //更新遥控器实时角度

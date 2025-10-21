@@ -40,6 +40,7 @@ platform\imu.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd_ex.h
 platform\imu.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 platform\imu.o: ../Core/applications/communication_bond/BMI088driver.h
 platform\imu.o: ../Core/Instance/struct_typedef.h
+platform\imu.o: ../Core/applications/algorithm/INS.h
 platform\imu.o: ..\Core\applications\algorithm\imu.h
 platform\imu.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
 platform\imu.o: ../Core/Inc/FreeRTOSConfig.h
@@ -56,12 +57,11 @@ platform\imu.o: ../Core/applications/Gimbal/Gimbal.h
 platform\imu.o: ../Core/applications/communication_bond/remote_control.h
 platform\imu.o: ../Core/applications/communication_bond/bsp_rc.h
 platform\imu.o: ..\Core\applications\algorithm\MahonyAHRS.h
-platform\imu.o: ..\Core\applications\bsp\bsp_dwt.h
+platform\imu.o: ../Core/applications/bsp/bsp_dwt.h
 platform\imu.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 platform\imu.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h
 platform\imu.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
 platform\imu.o: ..\Core\applications\algorithm\QuaternionEKF.h
-platform\imu.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 platform\imu.o: ..\Core\applications\algorithm\kalman_filter.h
 platform\imu.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 platform\imu.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h

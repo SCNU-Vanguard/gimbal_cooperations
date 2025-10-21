@@ -3,7 +3,7 @@
 
 #include "struct_typedef.h"
 #include "main.h"
-
+#include "INS.h"
 #define BMI088_TEMP_FACTOR 0.125f
 #define BMI088_TEMP_OFFSET 23.0f
 
@@ -45,6 +45,10 @@
 #define BMI088_GYRO_250_SEN 0.00013315805450396191230191732547673f
 #define BMI088_GYRO_125_SEN 0.000066579027251980956150958662738366f
 
+#define GxOFFSET 0.00247530174f
+#define GyOFFSET 0.000393082853f
+#define GzOFFSET 0.000393082853f
+#define gNORM 9.69293118f
 
 typedef __packed struct BMI088_RAW_DATA
 {
@@ -63,6 +67,20 @@ typedef struct BMI088_REAL_DATA
     fp32 time;
 } bmi088_real_data_t;
 
+typedef struct
+{
+    float Accel[3];
+
+    float Gyro[3];
+
+    float TempWhenCali;
+    float Temperature;
+
+    float AccelScale;
+    float GyroOffset[3];
+
+    float gNorm;
+} IMU_Data_t;
 
 enum
 {
@@ -94,8 +112,8 @@ extern uint8_t BMI088_init(void);
 extern bool_t bmi088_accel_init(void);
 extern bool_t bmi088_gyro_init(void);
 
-extern void BMI088_read(fp32 gyro[3], fp32 accel[3], fp32 *temperate);
-
+extern void BMI088_read(bmi088_data_t *bmi_data);
+extern IMU_Data_t BMI088;
 
 
 #endif

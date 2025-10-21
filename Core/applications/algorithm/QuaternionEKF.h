@@ -13,10 +13,6 @@
 #ifndef _QUAT_EKF_H
 #define _QUAT_EKF_H
 
-#include "stm32f4xx_hal.h"
-#include "main.h"
-#include "cmsis_os.h"
-
 #include "kalman_filter.h"
 
 /* boolean type definitions */

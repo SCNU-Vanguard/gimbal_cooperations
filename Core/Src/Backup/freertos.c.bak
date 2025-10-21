@@ -32,6 +32,7 @@
 #include "Serial.h"
 #include "VPC.h"
 #include "cmsis_os.h"  // ??CMSIS-RTOS????
+#include "INS.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -66,7 +67,7 @@ osThreadId IMU_slovingHandle;
 void StartDefaultTask(void const * argument);
 extern void Can_Send(void const * argument);
 extern void Gimbal_task(void);
-extern void INS(void const * argument);
+extern void INS_Calculate(void);
 
 extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
@@ -127,7 +128,7 @@ void MX_FREERTOS_Init(void) {
   GimbalHandle = osThreadCreate(osThread(Gimbal), NULL);
 
   /* definition and creation of IMU_sloving */
-  osThreadDef(IMU_sloving, INS, osPriorityLow, 0, 128);
+  osThreadDef(IMU_sloving, INS_Calculate, osPriorityLow, 0, 128);
   IMU_slovingHandle = osThreadCreate(osThread(IMU_sloving), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */

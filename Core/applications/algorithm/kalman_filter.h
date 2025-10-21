@@ -63,6 +63,7 @@
 typedef struct kf_t
 {
     float *FilteredValue;
+    // float FilteredValue[10];
     float *MeasuredVector;
     float *ControlVector;
     uint8_t xhatSize;

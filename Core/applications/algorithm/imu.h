@@ -41,6 +41,13 @@ extern uint8_t   SENSER_OFFSET_FLAG; //标志位组
 				float gZ;
 			}offset;
 			
+			// typedef struct
+			// {
+			// 	float x;
+			// 	float y;
+			// 	float z;
+			// 	} axis_3f_t;
+				
      		extern param_Angle imu_offset;
 			extern param_Angle imu_Angle;
 

@@ -57,5 +57,15 @@ platform\gimbal.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usb.h
 platform\gimbal.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd_ex.h
 platform\gimbal.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 platform\gimbal.o: ../Core/applications/communication_bond/BMI088driver.h
+platform\gimbal.o: ../Core/applications/algorithm/INS.h
 platform\gimbal.o: ../Core/applications/algorithm/pid.h
 platform\gimbal.o: ../Core/applications/communication_bond/CAN_receive.h
+platform\gimbal.o: ../Core/applications/algorithm/QuaternionEKF.h
+platform\gimbal.o: ../Core/applications/algorithm/kalman_filter.h
+platform\gimbal.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+platform\gimbal.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
+platform\gimbal.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h
+platform\gimbal.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
+platform\gimbal.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\DSP\Include\arm_math.h
+platform\gimbal.o: ../Drivers/CMSIS/Include/core_cm4.h
+platform\gimbal.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
