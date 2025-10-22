@@ -58,6 +58,7 @@ platform\gimbal.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd_ex.h
 platform\gimbal.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 platform\gimbal.o: ../Core/applications/communication_bond/BMI088driver.h
 platform\gimbal.o: ../Core/applications/algorithm/INS.h
+platform\gimbal.o: ../Core/applications/communication_bond/BMI088driver.h
 platform\gimbal.o: ../Core/applications/algorithm/pid.h
 platform\gimbal.o: ../Core/applications/communication_bond/CAN_receive.h
 platform\gimbal.o: ../Core/applications/algorithm/QuaternionEKF.h

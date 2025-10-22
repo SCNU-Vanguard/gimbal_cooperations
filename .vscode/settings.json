@@ -24,7 +24,10 @@
         "user_lib.h": "c",
         "cmsis_os2.h": "c",
         "system_stm32f4xx.h": "c",
-        "core_cm4.h": "c"
+        "core_cm4.h": "c",
+        "bmi088driver.h": "c",
+        "bmi088middleware.h": "c",
+        "bmi088reg.h": "c"
     },
     "cmake.sourceDirectory": "E:/RM/gimbal_cooperations/Drivers/CMSIS/NN",
     "cmake.allowUnsupportedPresetsVersions": true,

@@ -18,16 +18,20 @@
 
 #include "QuaternionEKF.h"
 #include "user_lib.h"
+#include "bsp_PWM.h"
+#include "math.h"
+#include "pid.h"
+
 INS_behaviour_t INS;
 
 const float xb[3] = {1, 0, 0};
 const float yb[3] = {0, 1, 0};
 const float zb[3] = {0, 0, 1};
 static float dt = 0;
-bmi088_data_t imu_data;
-
+// IMU_Data_t imu_data;
+float RefTemp = 40;
 axis_3f_t gyro_ins, accel_ins;
-
+pid_struct_t TempCtrl;
 static void BodyFrameToEarthFrame(const float *vecBF, float *vecEF, float *q);
 
 static void EarthFrameToBodyFrame(const float *vecEF, float *vecBF, float *q);
@@ -56,9 +60,9 @@ static void EKF_Quaternion_Init(float *init_q4)
 	for (uint8_t i = 0 ; i < 100 ; ++i)
 	{
 		INS_Data_Update( );
-		acc_init[IMU_X] += imu_data.accel[IMU_X];
-		acc_init[IMU_Y] += imu_data.accel[IMU_Y];
-		acc_init[IMU_Z] += imu_data.accel[IMU_Z];
+		acc_init[IMU_X] += imu_data.Accel[IMU_X];
+		acc_init[IMU_Y] += imu_data.Accel[IMU_Y];
+		acc_init[IMU_Z] += imu_data.Accel[IMU_Z];
 		DWT_Delay(0.001);
 	}
 	for (uint8_t i = 0 ; i < 3 ; ++i)
@@ -85,7 +89,11 @@ void INS_Init(void)
 	EKF_Quaternion_Init(init_quaternion);
 	// IMU_QuaternionEKF_Init(init_quaternion, 12, 0.005f, 1000000 * 15, 0.9998f, 0.005f);
 	IMU_QuaternionEKF_Init(init_quaternion, 10, 0.001f, 10000000, 1.0f, 0.0f);
-
+	HAL_TIM_PWM_Start(&htim10, TIM_CHANNEL_1);
+	//Wanghongxi版本pid系数
+	pid_init(&TempCtrl, 1000, 20, 0, 300, 2000.0f);
+	//C板例程pid系数
+	// pid_init(&TempCtrl, 1600.0f, 0.2f, 0, 300, 2000.0f);
 	INS.AccelLPF = 0.0085f; // 加速度低通滤波系数
 }
 
@@ -96,7 +104,7 @@ float ins_time = 0.0f;
 void INS_Calculate(void)
 {
 	INS_Init( );
-
+	static uint32_t count = 0;
 	static uint32_t INS_dwt_count = 0;
 	float ins_dt                  = 0.0f;
 for( ; ; )
@@ -104,21 +112,21 @@ for( ; ; )
 	/* code */
 	dt = DWT_GetDeltaT(&INS_dwt_count);
 	INS_Data_Update( );
-	INS.Gyro[IMU_X] = imu_data.gyro[IMU_X];
-	INS.Gyro[IMU_Y] = imu_data.gyro[IMU_Y];
-	INS.Gyro[IMU_Z] = imu_data.gyro[IMU_Z];
+	INS.Gyro[IMU_X] = imu_data.Gyro[IMU_X];
+	INS.Gyro[IMU_Y] = imu_data.Gyro[IMU_Y];
+	INS.Gyro[IMU_Z] = imu_data.Gyro[IMU_Z];
 
-	gyro_ins.x = imu_data.gyro[IMU_X];
-	gyro_ins.y = imu_data.gyro[IMU_Y];
-	gyro_ins.z = imu_data.gyro[IMU_Z];
+	gyro_ins.x = imu_data.Gyro[IMU_X];
+	gyro_ins.y = imu_data.Gyro[IMU_Y];
+	gyro_ins.z = imu_data.Gyro[IMU_Z];
 
-	INS.Accel[IMU_X] = imu_data.accel[IMU_X];
-	INS.Accel[IMU_Y] = imu_data.accel[IMU_Y];
-	INS.Accel[IMU_Z] = imu_data.accel[IMU_Z];
+	INS.Accel[IMU_X] = imu_data.Accel[IMU_X];
+	INS.Accel[IMU_Y] = imu_data.Accel[IMU_Y];
+	INS.Accel[IMU_Z] = imu_data.Accel[IMU_Z];
 
-	accel_ins.x = imu_data.accel[IMU_X];
-	accel_ins.y = imu_data.accel[IMU_Y];
-	accel_ins.z = imu_data.accel[IMU_Z];
+	accel_ins.x = imu_data.Accel[IMU_X];
+	accel_ins.y = imu_data.Accel[IMU_Y];
+	accel_ins.z = imu_data.Accel[IMU_Z];
 
 	IMU_QuaternionEKF_Update(INS.Gyro[IMU_X],
 	                         INS.Gyro[IMU_Y],
@@ -187,8 +195,27 @@ for( ; ; )
 	{
 		ins_time++;
 	}
+	// temperature control
+    if ((count % 2) == 0)
+    {
+        // 500hz
+        IMU_Temperature_Ctrl();
+    }
+	count++;
 }
 }
+
+/**
+ * @brief 温度控制
+ * 
+ */
+void IMU_Temperature_Ctrl(void)
+{
+    pid_calc_speed(&TempCtrl, imu_data.Temperature, RefTemp);
+
+    TIM_Set_PWM(&htim10, TIM_CHANNEL_1, float_constrain(float_rounding(TempCtrl.output), 0, UINT32_MAX));
+}
+
 /**
  * @brief          Transform 3dvector from BodyFrame to EarthFrame
  * @param[1]       vector in BodyFrame

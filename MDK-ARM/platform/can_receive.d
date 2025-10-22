@@ -59,6 +59,7 @@ platform\can_receive.o: ../Core/Inc/gpio.h
 platform\can_receive.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 platform\can_receive.o: ../Core/applications/communication_bond/BMI088driver.h
 platform\can_receive.o: ../Core/applications/algorithm/INS.h
+platform\can_receive.o: ../Core/applications/communication_bond/BMI088driver.h
 platform\can_receive.o: ../Core/Instance/vofa.h
 platform\can_receive.o: ../Core/Inc/usart.h
 platform\can_receive.o: ../Core/applications/algorithm/QuaternionEKF.h

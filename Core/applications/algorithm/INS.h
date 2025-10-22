@@ -13,7 +13,7 @@
 #define __INS_H__
 
 #include <stdint.h>
-
+#include "BMI088driver.h"
 /*
  * 根据奈奎斯特——香农采样定理，采样频率至少为被采信号最高频率的2倍，
  * 实际应用一般选取最高频率的5~10倍数作为采样频率
@@ -98,6 +98,7 @@ extern void INS_Init(void);
 
 extern void INS_Calculate(void);
 
-extern bmi088_data_t imu_data;
+// extern IMU_Data_t imu_data;
+			void IMU_Temperature_Ctrl(void);
 
 #endif /* __INS_H__ */

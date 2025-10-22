@@ -112,8 +112,8 @@ extern uint8_t BMI088_init(void);
 extern bool_t bmi088_accel_init(void);
 extern bool_t bmi088_gyro_init(void);
 
-extern void BMI088_read(bmi088_data_t *bmi_data);
-extern IMU_Data_t BMI088;
-
+extern void BMI088_read(IMU_Data_t *imu_data);
+extern IMU_Data_t imu_data;
+void Calibrate_MPU_Offset(IMU_Data_t *bmi088);
 
 #endif

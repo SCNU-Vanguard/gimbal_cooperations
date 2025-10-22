@@ -65,6 +65,7 @@ platform\main.o: ../Core/Inc/gpio.h
 platform\main.o: ../Core/applications/communication_bond/BMI088driver.h
 platform\main.o: ../Core/Instance/struct_typedef.h
 platform\main.o: ../Core/applications/algorithm/INS.h
+platform\main.o: ../Core/applications/communication_bond/BMI088driver.h
 platform\main.o: ../Core/applications/algorithm/imu.h
 platform\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 platform\main.o: ../Core/Instance/vofa.h

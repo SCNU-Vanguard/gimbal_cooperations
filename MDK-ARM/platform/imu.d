@@ -41,6 +41,7 @@ platform\imu.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 platform\imu.o: ../Core/applications/communication_bond/BMI088driver.h
 platform\imu.o: ../Core/Instance/struct_typedef.h
 platform\imu.o: ../Core/applications/algorithm/INS.h
+platform\imu.o: ../Core/applications/communication_bond/BMI088driver.h
 platform\imu.o: ..\Core\applications\algorithm\imu.h
 platform\imu.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/FreeRTOS.h
 platform\imu.o: ../Core/Inc/FreeRTOSConfig.h

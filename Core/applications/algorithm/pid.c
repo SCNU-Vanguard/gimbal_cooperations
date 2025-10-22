@@ -65,17 +65,17 @@ float pid_calc_speed(pid_struct_t *pid, float tar, float real)//PID运算函数
 
   // LIMIT_MIN_MAX(pid->i_out, -pid->i_max, pid->i_max);
 
-  if(pid->i_out>=5000){
-  	  pid->i_out=5000;
-    }else if(pid->i_out<=-5000){
-  	  pid->i_out=-5000;
+  if(pid->i_out>=2000){
+  	  pid->i_out=2000;
+    }else if(pid->i_out<=-2000){
+  	  pid->i_out=-2000;
     }
 	pid->output = pid->p_out + pid->i_out + pid->d_out;
   // LIMIT_MIN_MAX(pid->output, -pid->out_max, pid->out_max);
-		if(pid->output>=5000){
-	  pid->output=5000;
-  }else if(pid->output<=-5000){
-	  pid->output=-5000;
+		if(pid->output>=2000){
+	  pid->output=2000;
+  }else if(pid->output<=-2000){
+	  pid->output=-2000;
   }
   return pid->output;
 }
@@ -94,17 +94,17 @@ float pid_calc_raw(pid_struct_t *pid, float tar, float real)//PID运算函数
   pid->err[1] = pid->err[0];
 
   // LIMIT_MIN_MAX(pid->i_out, -pid->i_max, pid->i_max);
-  if(pid->i_out>=5000){
-  	  pid->i_out=5000;
-    }else if(pid->i_out<=-5000){
-  	  pid->i_out=-5000;
+  if(pid->i_out>=300){
+  	  pid->i_out=300;
+    }else if(pid->i_out<=-300){
+  	  pid->i_out=-300;
     }
   pid->output = pid->p_out + pid->i_out + pid->d_out;
   // LIMIT_MIN_MAX(pid->output, -pid->out_max, pid->out_max);
-  if(pid->output>=5000){
-	  pid->output=5000;
-  }else if(pid->output<=-5000){
-	  pid->output=-5000;
+  if(pid->output>=300){
+	  pid->output=300;
+  }else if(pid->output<=-300){
+	  pid->output=-300;
   }
   return pid->output;
 }

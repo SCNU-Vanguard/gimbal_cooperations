@@ -70,6 +70,7 @@
 "platform\usbd_ioreq.o"
 "platform\usbd_cdc.o"
 "platform\bsp_dwt.o"
+"platform\bsp_pwm.o"
 "C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\Lib\ARM\arm_cortexM4lf_math.lib"
 --strict --scatter "platform\platform.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
