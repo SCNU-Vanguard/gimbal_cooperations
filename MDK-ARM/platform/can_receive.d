@@ -62,12 +62,3 @@ platform\can_receive.o: ../Core/applications/algorithm/INS.h
 platform\can_receive.o: ../Core/applications/communication_bond/BMI088driver.h
 platform\can_receive.o: ../Core/Instance/vofa.h
 platform\can_receive.o: ../Core/Inc/usart.h
-platform\can_receive.o: ../Core/applications/algorithm/QuaternionEKF.h
-platform\can_receive.o: ../Core/applications/algorithm/kalman_filter.h
-platform\can_receive.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-platform\can_receive.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
-platform\can_receive.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h
-platform\can_receive.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
-platform\can_receive.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\DSP\Include\arm_math.h
-platform\can_receive.o: ../Drivers/CMSIS/Include/core_cm4.h
-platform\can_receive.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

@@ -61,13 +61,15 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_
     //更新姿态角实时角度
     //feedback_update->gimbal_pitch_motor.absolute_angle=imu_Angle.Pitch;
     //feedback_update->gimbal_yaw_motor.absolute_angle=imu_Angle.Yaw;
-	feedback_update->gimbal_pitch_motor.absolute_angle=QEKF_INS.Pitch;
-    feedback_update->gimbal_yaw_motor.absolute_angle=QEKF_INS.Yaw;
+		//feedback_update->gimbal_pitch_motor.absolute_angle=QEKF_INS.Roll;
+    //feedback_update->gimbal_yaw_motor.absolute_angle=QEKF_INS.Yaw;
+		feedback_update->gimbal_pitch_motor.absolute_angle=INS.Roll;
+    feedback_update->gimbal_yaw_motor.absolute_angle=INS.Yaw;
 
 
     //更新遥控器实时角度
     feedback_update->gimbal_rc_ctrl=get_remote_control_point();
-    *add_yaw=msp(feedback_update->gimbal_rc_ctrl->rc.ch[2],-660,660,-90,90);
+    *add_yaw=msp(feedback_update->gimbal_rc_ctrl->rc.ch[2],-660,660,-180,180);
     *add_pitch=msp(feedback_update->gimbal_rc_ctrl->rc.ch[3],-660,660,-90,90);
 
     feedback_update->gimbal_pitch_motor.absolute_angle_set=*add_pitch;
@@ -125,7 +127,7 @@ void gimbal_detact_calibration(gimbal_control_t *gimbal_motort){
         //    if(int_time < GIMBAL_INIT_TIME && int_stop_time < GIMBAL_INIT_STOP_TIME){
         //     return;
         //    }else{
-        if(int_time > GIMBAL_INIT_TIME && int_stop_time < GIMBAL_INIT_STOP_TIME){
+        if(int_time > GIMBAL_INIT_TIME && int_stop_time > GIMBAL_INIT_STOP_TIME){
             //信号量释放
             xSemaphoreGive(g_xSemTicks);
             int_stop_time = 0;
@@ -167,16 +169,16 @@ void gimbal_angle_limit(gimbal_control_t *gimbal_motort,float *add_yaw,float *ad
 
     //yaw
     if(*add_yaw<0){
-        if(*add_yaw<=-32){
-        if(gimbal_motort->gimbal_yaw_motor.absolute_angle<=-32){
+        if(*add_yaw<=-50){
+        if(gimbal_motort->gimbal_yaw_motor.absolute_angle<=-50){
             MotorSetTar(&motor_ready[0],PITCH_Limit_Hight,ABS);
         }
     }else{
         MotorSetTar(&motor_ready[0],gimbal_motort->gimbal_yaw_motor.absolute_angle_set,ABS);
     }
     }else if(*add_yaw>0){
-        if(*add_yaw>=35){
-        if(gimbal_motort->gimbal_yaw_motor.absolute_angle>=35){
+        if(*add_yaw>=50){
+        if(gimbal_motort->gimbal_yaw_motor.absolute_angle>=50){
                 MotorSetTar(&motor_ready[0],PITCH_Limit_Low,ABS);
         }
     }else{

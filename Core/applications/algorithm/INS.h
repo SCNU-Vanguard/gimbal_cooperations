@@ -100,5 +100,6 @@ extern void INS_Calculate(void);
 
 // extern IMU_Data_t imu_data;
 			void IMU_Temperature_Ctrl(void);
+			extern INS_behaviour_t INS;
 
 #endif /* __INS_H__ */

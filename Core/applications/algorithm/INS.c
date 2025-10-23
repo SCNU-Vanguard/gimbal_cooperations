@@ -21,6 +21,7 @@
 #include "bsp_PWM.h"
 #include "math.h"
 #include "pid.h"
+#include "Gimbal.h"
 
 INS_behaviour_t INS;
 
@@ -107,6 +108,8 @@ void INS_Calculate(void)
 	static uint32_t count = 0;
 	static uint32_t INS_dwt_count = 0;
 	float ins_dt                  = 0.0f;
+	//云台归中完成获取信号量
+ 	xSemaphoreTake(g_xSemTicks, portMAX_DELAY);
 for( ; ; )
 {
 	/* code */
@@ -168,8 +171,8 @@ for( ; ; )
 		stop_time = 0;
 		INS.v_n   = 0.0f;
 	}
-
-	if (ins_time > 3000.0f)
+//if (ins_time > 3000.0f)
+	if (ins_time > 30.0f)
 	{
 		INS.v_n      = INS.v_n + INS.MotionAccel_n[1] * 0.001f;
 		INS.x_n      = INS.x_n + INS.v_n * 0.001f;
@@ -196,11 +199,11 @@ for( ; ; )
 		ins_time++;
 	}
 	// temperature control
-    if ((count % 2) == 0)
-    {
-        // 500hz
-        IMU_Temperature_Ctrl();
-    }
+    // if ((count % 2) == 0)
+    // {
+    //     // 500hz
+    //     IMU_Temperature_Ctrl();
+    // }
 	count++;
 }
 }
