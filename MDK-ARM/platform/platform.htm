@@ -3,7 +3,7 @@
 <title>Static Call Graph - [platform\platform.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image platform\platform.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Thu Oct 23 17:48:47 2025
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Fri Oct 24 18:32:43 2025
 <BR><P>
 <H3>Maximum Stack Usage =        296 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -995,10 +995,10 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[83]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Can_Send
 </UL>
 
-<P><STRONG><a name="[83]"></a>Can_Send</STRONG> (Thumb, 62 bytes, Stack size 0 bytes, can_receive.o(i.Can_Send))
-<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = Can_Send &rArr; vofa_demo3 &rArr; VOFA_Send_Frametail &rArr; VOFA_Transmit &rArr; HAL_UART_Transmit &rArr; UART_WaitOnFlagUntilTimeout
+<P><STRONG><a name="[83]"></a>Can_Send</STRONG> (Thumb, 54 bytes, Stack size 0 bytes, can_receive.o(i.Can_Send))
+<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = Can_Send &rArr; vofa_demo2 &rArr; VOFA_Send_Frametail &rArr; VOFA_Transmit &rArr; HAL_UART_Transmit &rArr; UART_WaitOnFlagUntilTimeout
 </UL>
-<BR>[Calls]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vofa_demo3
+<BR>[Calls]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vofa_demo2
 <LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CAN_cmd_gimbal
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> freertos.o(.constdata)
@@ -2816,7 +2816,7 @@ Global Symbols
 <P><STRONG><a name="[213]"></a>VOFA_Send_Data</STRONG> (Thumb, 44 bytes, Stack size 8 bytes, vofa.o(i.VOFA_Send_Data))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = VOFA_Send_Data
 </UL>
-<BR>[Called By]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vofa_demo3
+<BR>[Called By]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vofa_demo2
 </UL>
 
 <P><STRONG><a name="[1d6]"></a>VOFA_Send_Frametail</STRONG> (Thumb, 50 bytes, Stack size 16 bytes, vofa.o(i.VOFA_Send_Frametail))
@@ -2824,7 +2824,7 @@ Global Symbols
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;VOFA_Transmit
 </UL>
-<BR>[Called By]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vofa_demo3
+<BR>[Called By]<UL><LI><a href="#[cb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;vofa_demo2
 </UL>
 
 <P><STRONG><a name="[1d7]"></a>VOFA_Transmit</STRONG> (Thumb, 6 bytes, Stack size 0 bytes, vofa.o(i.VOFA_Transmit))
@@ -3074,7 +3074,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[dd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Motor_Calc
 </UL>
 
-<P><STRONG><a name="[19f]"></a>pid_calc_raw_return</STRONG> (Thumb, 158 bytes, Stack size 4 bytes, pid.o(i.pid_calc_raw_return))
+<P><STRONG><a name="[19f]"></a>pid_calc_raw_return</STRONG> (Thumb, 160 bytes, Stack size 4 bytes, pid.o(i.pid_calc_raw_return))
 <BR><BR>[Stack]<UL><LI>Max Depth = 4<LI>Call Chain = pid_calc_raw_return
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rad_format
@@ -3282,8 +3282,8 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[26]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;PendSV_Handler
 </UL>
 
-<P><STRONG><a name="[cb]"></a>vofa_demo3</STRONG> (Thumb, 40 bytes, Stack size 8 bytes, vofa.o(i.vofa_demo3))
-<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = vofa_demo3 &rArr; VOFA_Send_Frametail &rArr; VOFA_Transmit &rArr; HAL_UART_Transmit &rArr; UART_WaitOnFlagUntilTimeout
+<P><STRONG><a name="[cb]"></a>vofa_demo2</STRONG> (Thumb, 30 bytes, Stack size 8 bytes, vofa.o(i.vofa_demo2))
+<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = vofa_demo2 &rArr; VOFA_Send_Frametail &rArr; VOFA_Transmit &rArr; HAL_UART_Transmit &rArr; UART_WaitOnFlagUntilTimeout
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;VOFA_Send_Frametail
 <LI><a href="#[213]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;VOFA_Send_Data

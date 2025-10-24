@@ -22,11 +22,11 @@ void Gimbal_task(void){
 
     while (1)
     {
-		gimbal_detact_calibration(&gimbal_control);
-        gimbal_feedback_update(&gimbal_control,&add_yaw,&add_pitch);
-        gimbal_angle_limit(&gimbal_control,&add_yaw,&add_pitch);
+		 gimbal_detact_calibration(&gimbal_control);
+     gimbal_feedback_update(&gimbal_control,&add_yaw,&add_pitch);
+     gimbal_angle_limit(&gimbal_control,&add_yaw,&add_pitch);
         //以absolute_angle_set为目标值，absolute_angle为当前值，进行pid串级环的运算，并将值存到motor_ready[]结构体中
-        Motor_Calc(&gimbal_control);
+     Motor_Calc(&gimbal_control);
     }
 }
 /**
