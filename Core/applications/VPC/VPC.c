@@ -1,6 +1,5 @@
 #include "VPC.h"
-#include "Serial.h"
-#include "cmsis_os.h"
+
 
 
  void VPC_Receive(void)
@@ -12,9 +11,10 @@
     //    gimbal_cmd.v_yaw=aim_packet_from_nuc.v_yaw;
 
     //解包之后要根据我们的控制逻辑来改，调用ROS2传来的结构体的目标数据
+    xSemaphoreTake(g_xSemVPC, portMAX_DELAY);
+    
 
  }
- 
  
 
 void VPC_Init(void)
@@ -24,15 +24,18 @@ void VPC_Init(void)
 
 }
 
-// void VPC_Task(void *argument)
-// {
-//    VPC_Init();
-//    uint32_t lastWakeTime = osKernelGetTickCount();
-//    for(;;)
-//     {
-//         VPC_Receive();
-//         Pack_And_Send_Data_ROS2(&aim_packet_to_nuc);
-//         osDelayUntil(&lastWakeTime, VPC_TASK_PERIOD);
-//     }
+ void VPC_Task(void *argument)
+ {
+    VPC_Init();
+    TickType_t lastWakeTime = xTaskGetTickCount();
 
-// }
+    for(;;)
+     {
+         VPC_Receive();
+         Pack_And_Send_Data_ROS2(&aim_packet_to_nuc);     //我们要发什么呢？🤔
+         vTaskDelayUntil(&lastWakeTime, VPC_TASK_PERIOD);
+     }
+
+ }
+
+

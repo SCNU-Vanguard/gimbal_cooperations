@@ -8,6 +8,7 @@
 #include "struct_typedef.h"
 #include "remote_control.h"
 
+#include "serial.h"
 
 //电机码盘值最大以及中值
 #define HALF_ECD_RANGE  4096
@@ -117,6 +118,7 @@ typedef struct
 
 typedef struct
 {
+    uint8_t Ctl_mode;
     const RC_ctrl_t *gimbal_rc_ctrl;
     const fp32 *gimbal_INT_angle_point;
     const fp32 *gimbal_INT_gyro_point;
@@ -126,6 +128,11 @@ typedef struct
 } gimbal_control_t;//云台模式控制
 
 
+
+
+
+
+
 /**
   * @brief          云台任务，间隔 GIMBAL_CONTROL_TIME 1ms
   * @param[in]      pvParameters: 空
@@ -133,7 +140,7 @@ typedef struct
   */
  extern void Gimbal_task(void);
 
-static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_yaw,float *add_pitch);
+static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_yaw,float *add_pitch,uint8_t Crtl_mode);
 // 先声明函数（告诉编译器函数的签名）
 void gimbal_angle_limit(gimbal_control_t *gimbal_motort, float *add_yaw,float *add_pitch);
 // 再声明其他函数（如 gimbal_calibration）

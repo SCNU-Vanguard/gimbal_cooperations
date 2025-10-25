@@ -1,9 +1,18 @@
 #ifndef __VPC_H__
 #define __VPC_H__
 
-//void VPC_Task(void *argument);
+#include "cmsis_os.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "semphr.h"
+#include "stdint.h"
+#include "Serial.h"
+
 void VPC_Init(void);
 void VPC_Receive(void);
+void VPC_Task(void *argument);
+
+extern SemaphoreHandle_t g_xSemVPC;
 
 #define VPC_TASK_PERIOD 1
 #endif
