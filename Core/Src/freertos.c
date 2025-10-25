@@ -33,6 +33,7 @@
 #include "VPC.h"
 #include "cmsis_os.h"  // ??CMSIS-RTOS????
 #include "INS.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -59,6 +60,8 @@ osThreadId can_send_motorHandle;
 osThreadId GimbalHandle;
 osThreadId IMU_slovingHandle;
 
+
+
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
 
@@ -68,6 +71,8 @@ void StartDefaultTask(void const * argument);
 extern void Can_Send(void const * argument);
 extern void Gimbal_task(void);
 extern void INS_Calculate(void);
+extern void VPC_Task(void * argument);
+
 
 extern void MX_USB_DEVICE_Init(void);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
@@ -131,6 +136,10 @@ void MX_FREERTOS_Init(void) {
   osThreadDef(IMU_sloving, INS_Calculate, osPriorityLow, 0, 128);
   IMU_slovingHandle = osThreadCreate(osThread(IMU_sloving), NULL);
 
+  /* definition and creation of VPC_sloving */
+  osThreadDef(VPC_sloving, VPC_Task, osPriorityLow, 0, 128);
+  VPCHandle = osThreadCreate(osThread(VPC_sloving), NULL);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   /* USER CODE END RTOS_THREADS */
@@ -157,20 +166,11 @@ void StartDefaultTask(void const * argument)
   /* USER CODE END StartDefaultTask */
 }
 
+
+SemaphoreHandle_t g_xSemVPC = NULL;  
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
 
-void VPC_Task(void *argument)
-{
-  //  astWakeTime = osKernelGetTickCount();
-   for(;;)VPC_Init();
-  //  uint32_t l
-    {
-        // VPC_Receive();
-        // Pack_And_Send_Data_ROS2(&aim_packet_to_nuc);
-        // osDelayUntil(&lastWakeTime, VPC_TASK_PERIOD);
-    }
 
-}
 
 /* USER CODE END Application */
