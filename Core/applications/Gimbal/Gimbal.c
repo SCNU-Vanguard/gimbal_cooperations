@@ -25,7 +25,7 @@ void Gimbal_task(void){
 		 gimbal_detact_calibration(&gimbal_control);
      gimbal_feedback_update(&gimbal_control,&add_yaw,&add_pitch);
      gimbal_angle_limit(&gimbal_control,&add_yaw,&add_pitch);
-        //以absolute_angle_set为目标值，absolute_angle为当前值，进行pid串级环的运算，并将值存到motor_ready[]结构体中
+     //以absolute_angle_set为目标值，absolute_angle为当前值，进行pid串级环的运算，并将值存到motor_ready[]结构体中
      Motor_Calc(&gimbal_control);
     }
 }
@@ -69,7 +69,7 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_
 
     //更新遥控器实时角度
     feedback_update->gimbal_rc_ctrl=get_remote_control_point();
-    *add_yaw=msp(feedback_update->gimbal_rc_ctrl->rc.ch[2],-660,660,-180,180);
+	  *add_yaw=msp(feedback_update->gimbal_rc_ctrl->rc.ch[2],-660,660,-180,180);
     *add_pitch=msp(feedback_update->gimbal_rc_ctrl->rc.ch[3],-660,660,-90,90);
 
     feedback_update->gimbal_pitch_motor.absolute_angle_set=*add_pitch;
@@ -79,7 +79,7 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_
     feedback_update->gimbal_yaw_motor.motor_gyro_set=feedback_update->gimbal_yaw_motor.motor_gyro+*add_yaw;
 
     //计算设置角度后的目标角度与中值的相对角度，并以此为标准，因为最大和最小限幅值也是根据相对角度来定的，这样避免目标角度出现负值
-    feedback_update->gimbal_pitch_motor.relative_angle=motor_ecd_to_angle_change(feedback_update->gimbal_pitch_motor.motor_gyro,OFFSET_ECD);
+    feedback_update->gimbal_pitch_motor.relative_angle=motor_ecd_to_angle_change(feedback_update->gimbal_pitch_motor.motor_gyro,PITCH_OFFSET_ECD);
     feedback_update->gimbal_yaw_motor.relative_angle_set=motor_ecd_to_angle_change(feedback_update->gimbal_yaw_motor.motor_gyro_set,0);
 
 
@@ -106,12 +106,13 @@ void gimbal_detact_calibration(gimbal_control_t *gimbal_motort){
         static uint16_t int_stop_time=0;
         gimbal_motort->gimbal_pitch_motor.motor_gyro=motor_data[1].angle;
 				gimbal_motort->gimbal_yaw_motor.motor_gyro=motor_data[0].angle;
-        MotorSetTar(&motor_ready[0], 1941, ABS);  
-        MotorSetTar(&motor_ready[1], OFFSET_ECD, ABS);
+        MotorSetTar(&motor_ready[0],YAW_OFFSET_ECD, ABS);  
+        MotorSetTar(&motor_ready[1], PITCH_OFFSET_ECD, ABS);
 				Motor_return(gimbal_motort);
 		
         int_time++;
-        if(fabs(gimbal_motort->gimbal_yaw_motor.motor_gyro-1941)<GIMBAL_INIT_ANGLE_ERROR){
+        if((fabs(gimbal_motort->gimbal_yaw_motor.motor_gyro-YAW_OFFSET_ECD)<GIMBAL_INIT_ANGLE_ERROR)||
+					(fabs(gimbal_motort->gimbal_pitch_motor.motor_gyro-PITCH_OFFSET_ECD))<GIMBAL_INIT_ANGLE_ERROR){
             //if(int_stop_time<GIMBAL_INIT_STOP_TIME){
             int_stop_time++;
             //}
@@ -128,6 +129,10 @@ void gimbal_detact_calibration(gimbal_control_t *gimbal_motort){
         //     return;
         //    }else{
         if(int_time > GIMBAL_INIT_TIME && int_stop_time > GIMBAL_INIT_STOP_TIME){
+					//在归中结束后将当前位置设为目标位置，抑制电机归中后漂移
+            MotorSetTar(&motor_ready[0],motor_data[0].angle, ABS);
+            MotorSetTar(&motor_ready[1],motor_data[1].angle, ABS);		  
+            
             //信号量释放
             xSemaphoreGive(g_xSemTicks);
             int_stop_time = 0;

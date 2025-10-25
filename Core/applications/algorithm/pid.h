@@ -37,8 +37,14 @@ extern pid_struct_t gimbal_yaw_angle_pid;
 extern pid_struct_t gimbal_yaw_speed_pid;
 extern pid_struct_t gimbal_yaw_speed_pid_return;
 extern pid_struct_t gimbal_yaw_angle_pid_return;
+							
+extern pid_struct_t gimbal_pitch_speed_pid;
+extern pid_struct_t gimbal_pitch_angle_pid;
+extern pid_struct_t gimbal_pitch_speed_pid_return;
+extern pid_struct_t gimbal_pitch_angle_pid_return;
+							
 extern float pid_calc_raw(pid_struct_t *pid, float tar, float real);
 extern float pid_calc_raw_return(pid_struct_t *pid, float tar, float real);
 extern float pid_calc_speed(pid_struct_t *pid, float tar, float real);
-
+extern void reset_pid_integrals(pid_struct_t *gimbal);
 #endif
