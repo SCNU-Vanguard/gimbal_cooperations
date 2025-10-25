@@ -3,7 +3,7 @@
 <title>Static Call Graph - [platform\platform.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image platform\platform.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Fri Oct 24 18:32:43 2025
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060750: Last Updated: Sat Oct 25 14:45:19 2025
 <BR><P>
 <H3>Maximum Stack Usage =        296 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -2074,8 +2074,8 @@ Global Symbols
 <LI><a href="#[dc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_angle_limit
 </UL>
 
-<P><STRONG><a name="[dd]"></a>Motor_Calc</STRONG> (Thumb, 378 bytes, Stack size 56 bytes, motor.o(i.Motor_Calc))
-<BR><BR>[Stack]<UL><LI>Max Depth = 128<LI>Call Chain = Motor_Calc &rArr; msp &rArr; __aeabi_dmul
+<P><STRONG><a name="[dd]"></a>Motor_Calc</STRONG> (Thumb, 346 bytes, Stack size 48 bytes, motor.o(i.Motor_Calc))
+<BR><BR>[Stack]<UL><LI>Max Depth = 120<LI>Call Chain = Motor_Calc &rArr; msp &rArr; __aeabi_dmul
 </UL>
 <BR>[Calls]<UL><LI><a href="#[19d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pid_calc_speed
 <LI><a href="#[19c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pid_calc_raw
@@ -2976,7 +2976,7 @@ Global Symbols
 <LI><a href="#[db]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;gimbal_feedback_update
 </UL>
 
-<P><STRONG><a name="[1e2]"></a>gimbal_PID_init</STRONG> (Thumb, 128 bytes, Stack size 4 bytes, pid.o(i.gimbal_PID_init))
+<P><STRONG><a name="[1e2]"></a>gimbal_PID_init</STRONG> (Thumb, 132 bytes, Stack size 4 bytes, pid.o(i.gimbal_PID_init))
 <BR><BR>[Stack]<UL><LI>Max Depth = 4<LI>Call Chain = gimbal_PID_init
 </UL>
 <BR>[Calls]<UL><LI><a href="#[181]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pid_init
@@ -2992,7 +2992,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[84]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Gimbal_task
 </UL>
 
-<P><STRONG><a name="[da]"></a>gimbal_detact_calibration</STRONG> (Thumb, 172 bytes, Stack size 24 bytes, gimbal.o(i.gimbal_detact_calibration))
+<P><STRONG><a name="[da]"></a>gimbal_detact_calibration</STRONG> (Thumb, 174 bytes, Stack size 24 bytes, gimbal.o(i.gimbal_detact_calibration))
 <BR><BR>[Stack]<UL><LI>Max Depth = 152<LI>Call Chain = gimbal_detact_calibration &rArr; Motor_return &rArr; msp &rArr; __aeabi_dmul
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;xQueueGenericSend
@@ -3066,7 +3066,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[18b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;MX_FREERTOS_Init
 </UL>
 
-<P><STRONG><a name="[19c]"></a>pid_calc_raw</STRONG> (Thumb, 158 bytes, Stack size 4 bytes, pid.o(i.pid_calc_raw))
+<P><STRONG><a name="[19c]"></a>pid_calc_raw</STRONG> (Thumb, 160 bytes, Stack size 4 bytes, pid.o(i.pid_calc_raw))
 <BR><BR>[Stack]<UL><LI>Max Depth = 4<LI>Call Chain = pid_calc_raw
 </UL>
 <BR>[Calls]<UL><LI><a href="#[1f1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rad_format_limit
