@@ -223,7 +223,7 @@ void gimbal_angle_limit(gimbal_control_t *gimbal_motort,float *add_yaw,float *ad
     if(*add_yaw<0){
         if(*add_yaw<=-50){
         if(gimbal_motort->gimbal_yaw_motor.absolute_angle<=-50){
-            MotorSetTar(&motor_ready[0],PITCH_Limit_Hight,ABS);
+            MotorSetTar(&motor_ready[0],YAW_Limit_Low,ABS);
         }
     }else{
         MotorSetTar(&motor_ready[0],gimbal_motort->gimbal_yaw_motor.absolute_angle_set,ABS);
@@ -231,7 +231,7 @@ void gimbal_angle_limit(gimbal_control_t *gimbal_motort,float *add_yaw,float *ad
     }else if(*add_yaw>0){
         if(*add_yaw>=50){
         if(gimbal_motort->gimbal_yaw_motor.absolute_angle>=50){
-                MotorSetTar(&motor_ready[0],PITCH_Limit_Low,ABS);
+                MotorSetTar(&motor_ready[0],YAW_Limit_Hight,ABS);
         }
     }else{
 				MotorSetTar(&motor_ready[0],gimbal_motort->gimbal_yaw_motor.absolute_angle_set,ABS);
@@ -242,3 +242,6 @@ void gimbal_angle_limit(gimbal_control_t *gimbal_motort,float *add_yaw,float *ad
 
 
 }
+
+
+

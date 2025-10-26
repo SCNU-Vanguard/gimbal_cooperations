@@ -27,16 +27,18 @@ Project File Date:  10/23/2025
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'platform'
-compiling pid.c...
+compiling Gimbal.c...
 ../Drivers/CMSIS/Device/ST/STM32F4xx/Include/stm32f407xx.h(51): warning:  #47-D: incompatible redefinition of macro "__FPU_PRESENT" 
   #define __FPU_PRESENT             1U       /*!< FPU present                                   */
 ../Drivers/CMSIS/Include/core_cm4.h(79): warning:  #47-D: incompatible redefinition of macro "__FPU_USED" 
         #define __FPU_USED       1U
-..\Core\applications\algorithm\pid.c: 2 warnings, 0 errors
+../Core/applications/VPC/VPC.h(19): warning:  #1-D: last line of file ends without a newline
+  #endif
+..\Core\applications\Gimbal\Gimbal.c: 3 warnings, 0 errors
 linking...
-Program Size: Code=52260 RO-data=1420 RW-data=832 ZI-data=50728  
+Program Size: Code=52272 RO-data=1420 RW-data=832 ZI-data=50728  
 FromELF: creating hex file...
-"platform\platform.axf" - 0 Error(s), 2 Warning(s).
+"platform\platform.axf" - 0 Error(s), 3 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -65,7 +67,7 @@ Package Vendor: Keil
    * Component: ARM::CMSIS:DSP:1.5.2
       Include file:  CMSIS\DSP\Include\arm_math.h
       Library file:  CMSIS\Lib\ARM\arm_cortexM4lf_math.lib
-Build Time Elapsed:  00:00:01
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>

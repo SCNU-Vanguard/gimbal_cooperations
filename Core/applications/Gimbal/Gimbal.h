@@ -16,8 +16,8 @@
 #define PITCH_OFFSET_ECD 6805 //pitch轴中值
 #define YAW_OFFSET_ECD  1941  //yaw轴中值
 //电机限幅机械角度
-#define YAW_Limit_Low 2000
-#define YAW_Limit_Hight 6000
+#define YAW_Limit_Low -90
+#define YAW_Limit_Hight 90
 #define PITCH_Limit_Low 35
 #define PITCH_Limit_Hight -40
 

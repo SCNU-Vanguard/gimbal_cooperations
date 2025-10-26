@@ -74,3 +74,5 @@ platform\gimbal.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\DSP\Include\arm_mat
 platform\gimbal.o: ../Drivers/CMSIS/Include/core_cm4.h
 platform\gimbal.o: ../Core/applications/VPC/VPC.h
 platform\gimbal.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
+platform\gimbal.o: ../Core/Instance/vofa.h
+platform\gimbal.o: ../Core/Inc/usart.h
