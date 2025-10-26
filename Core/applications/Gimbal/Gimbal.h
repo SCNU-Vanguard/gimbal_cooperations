@@ -149,5 +149,5 @@ void gimbal_detact_calibration(gimbal_control_t *gimbal_motor_t);
 // void Motor_Calc(gimbal_control_t *feedback_update);
 
 extern SemaphoreHandle_t g_xSemTicks;
-
+extern SemaphoreHandle_t g_xSemVPC;
 #endif  // 结束保护宏

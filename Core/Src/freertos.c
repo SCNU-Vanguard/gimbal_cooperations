@@ -33,6 +33,7 @@
 #include "VPC.h"
 #include "cmsis_os.h"  // ??CMSIS-RTOS????
 #include "INS.h"
+#include "semphr.h"
 
 /* USER CODE END Includes */
 
@@ -142,8 +143,6 @@ void MX_FREERTOS_Init(void) {
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
-
-  
   /* USER CODE END RTOS_THREADS */
 
 }
@@ -169,8 +168,7 @@ void StartDefaultTask(void const * argument)
 }
 
 
-SemaphoreHandle_t g_xSemVPC = NULL;  
-  
+
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
 

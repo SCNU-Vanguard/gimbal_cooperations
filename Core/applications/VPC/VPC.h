@@ -8,6 +8,7 @@
 #include "stdint.h"
 #include "Serial.h"
 #include "vofa.h"
+#include "gimbal.h"
 
 void VPC_Init(void);
 void VPC_Receive(void);

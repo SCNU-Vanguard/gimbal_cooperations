@@ -17,7 +17,8 @@ float add_yaw;
 float add_pitch;
 
 SemaphoreHandle_t g_xSemTicks;
-
+SemaphoreHandle_t g_xSemVPC = NULL;  
+  
 
 typedef struct{
     float diff_yaw;
@@ -36,7 +37,7 @@ void Gimbal_task(void){
     while (1)
     {
 
-      gimbal_control.Ctl_mode=1;  //云台远程操控模式   0 为视觉自动模式  1为遥控器模式
+      gimbal_control.Ctl_mode=0;  //云台远程操控模式   0 为视觉自动模式  1为遥控器模式
 
 
       if (gimbal_control.Ctl_mode==1)//远程操控模式
@@ -87,6 +88,7 @@ static fp32 motor_ecd_to_angle_change(uint16_t ecd, uint16_t offset_ecd)
 //云台更新数据
 static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_yaw,float *add_pitch,uint8_t Crtl_mode){
 
+    g_xSemVPC = xSemaphoreCreateBinary();
     //更新电机实时角度
     feedback_update->gimbal_pitch_motor.motor_gyro=motor_data[1].angle;
     feedback_update->gimbal_yaw_motor.motor_gyro=motor_data[0].angle;
@@ -124,7 +126,8 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_
     feedback_update->gimbal_pitch_motor.relative_angle=motor_ecd_to_angle_change(feedback_update->gimbal_pitch_motor.motor_gyro,PITCH_OFFSET_ECD);
     feedback_update->gimbal_yaw_motor.relative_angle_set=motor_ecd_to_angle_change(feedback_update->gimbal_yaw_motor.motor_gyro_set,0);
     
-    //xSemaphoreGive(g_xSemVPC);
+	  if(Crtl_mode == 0)
+    xSemaphoreGive(g_xSemVPC);
 
     //计算云台相对于最大限幅值的相对角度，同时判断此时电机处于左值还是右值
     // if(feedback_update->gimbal_pitch_motor.relative_angle_set-PITCH_Limit_Hight>0)
@@ -155,9 +158,9 @@ void gimbal_detact_calibration(gimbal_control_t *gimbal_motort){
         MotorSetTar(&motor_ready[1], PITCH_OFFSET_ECD, ABS);
 				Motor_return(gimbal_motort);
 		
-        int_time++;
-        if((fabs(gimbal_motort->gimbal_yaw_motor.motor_gyro-YAW_OFFSET_ECD)<GIMBAL_INIT_ANGLE_ERROR)||
-					(fabs(gimbal_motort->gimbal_pitch_motor.motor_gyro-PITCH_OFFSET_ECD))<GIMBAL_INIT_ANGLE_ERROR){
+       int_time++;
+       if((fabs(gimbal_motort->gimbal_yaw_motor.motor_gyro-YAW_OFFSET_ECD)<GIMBAL_INIT_ANGLE_ERROR)||
+				(fabs(gimbal_motort->gimbal_pitch_motor.motor_gyro-PITCH_OFFSET_ECD))<GIMBAL_INIT_ANGLE_ERROR){
             //if(int_stop_time<GIMBAL_INIT_STOP_TIME){
             int_stop_time++;
             //}
