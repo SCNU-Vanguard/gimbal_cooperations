@@ -11,14 +11,17 @@
     //    gimbal_cmd.v_yaw=aim_packet_from_nuc.v_yaw;
 
     //解包之后要根据我们的控制逻辑来改，调用ROS2传来的结构体的目标数据
+
     xSemaphoreTake(g_xSemVPC, portMAX_DELAY);
-    
+    vofa_demo2(aim_packet_from_nuc.yaw_diff, aim_packet_from_nuc.pitch_diff, &huart6);
 
  }
  
 
 void VPC_Init(void)
 {
+  g_xSemVPC = xSemaphoreCreateBinary(); 
+  xSemaphoreGive(g_xSemVPC);  
   aim_packet_to_nuc.detect_color=0;//1-blue 0-red
   Send_Packet_Init(&aim_packet_to_nuc);
 

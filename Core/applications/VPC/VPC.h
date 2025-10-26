@@ -7,6 +7,7 @@
 #include "semphr.h"
 #include "stdint.h"
 #include "Serial.h"
+#include "vofa.h"
 
 void VPC_Init(void);
 void VPC_Receive(void);
