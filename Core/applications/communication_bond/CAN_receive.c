@@ -191,7 +191,7 @@ void Can_Send(void){
    //CAN_cmd_gimbal(motor_ready[MOTOR_YAW].output,motor_ready[MOTOR_PITCH].output,motor_ready[MOTOR_PITCH].output,motor_ready[MOTOR_PITCH].output);
 	CAN_cmd_gimbal(motor_ready[0].output,motor_ready[1].output,0,0);
   //vofa_demo2(motor_data[0].angle,gimbal_control.gimbal_yaw_motor.motor_gyro_set,&huart6);
-  vofa_demo3(motor_data[1].angle,motor_ready[1].target,gimbal_control.gimbal_yaw_motor.motor_gyro_set,&huart6);
+  vofa_demo3(motor_data[1].angle,motor_ready[1].target,gimbal_control.gimbal_pitch_motor.motor_gyro_set,&huart6);
 		 //vofa_demo3(INS.Yaw,motor_ready[MOTOR_YAW].target,motor_data[0].angle,&huart6);
     //vofa_demo3(QEKF_INS.Pitch,QEKF_INS.Roll,QEKF_INS.Yaw,&huart6);
   }

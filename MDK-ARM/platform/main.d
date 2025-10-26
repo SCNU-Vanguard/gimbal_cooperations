@@ -74,6 +74,7 @@ platform\main.o: ../Core/Inc/config.h
 platform\main.o: ../Core/applications/Gimbal/Gimbal.h
 platform\main.o: ../Core/applications/communication_bond/remote_control.h
 platform\main.o: ../Core/applications/communication_bond/bsp_rc.h
+platform\main.o: ../Core/applications/Serial/serial.h
 platform\main.o: ../Core/applications/algorithm/pid.h
 platform\main.o: ../Core/applications/communication_bond/CAN_receive.h
 platform\main.o: ../Core/applications/communication_bond/bsp_can.h

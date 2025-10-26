@@ -18,8 +18,7 @@ platform\motor.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/task.h
 platform\motor.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
 platform\motor.o: ../Core/applications/communication_bond/remote_control.h
 platform\motor.o: ../Core/applications/communication_bond/bsp_rc.h
-platform\motor.o: ..\Core\applications\algorithm\pid.h
-platform\motor.o: ../Core/Inc/main.h
+platform\motor.o: ../Core/applications/Serial/serial.h
 platform\motor.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 platform\motor.o: ../Core/Inc/stm32f4xx_hal_conf.h
 platform\motor.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h
@@ -54,3 +53,7 @@ platform\motor.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 platform\motor.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd.h
 platform\motor.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usb.h
 platform\motor.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd_ex.h
+platform\motor.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+platform\motor.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+platform\motor.o: ..\Core\applications\algorithm\pid.h
+platform\motor.o: ../Core/Inc/main.h

@@ -57,10 +57,11 @@ platform\freertos.o: ../Core/Instance/struct_typedef.h
 platform\freertos.o: ../Core/applications/Gimbal/Gimbal.h
 platform\freertos.o: ../Core/applications/communication_bond/remote_control.h
 platform\freertos.o: ../Core/applications/communication_bond/bsp_rc.h
-platform\freertos.o: ../Core/applications/Serial/Serial.h
+platform\freertos.o: ../Core/applications/Serial/serial.h
 platform\freertos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 platform\freertos.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 platform\freertos.o: ../Core/applications/VPC/VPC.h
+platform\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 platform\freertos.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h
 platform\freertos.o: ../Core/applications/algorithm/INS.h
 platform\freertos.o: ../Core/applications/communication_bond/BMI088driver.h

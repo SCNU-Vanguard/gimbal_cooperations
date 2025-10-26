@@ -168,7 +168,7 @@
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>gimbal_control</ItemText>
+          <ItemText>gimbal_control,0x0A</ItemText>
         </Ww>
         <Ww>
           <count>3</count>
@@ -219,6 +219,16 @@
           <count>12</count>
           <WinNumber>1</WinNumber>
           <ItemText>gimbal_pitch_angle_pid_return</ItemText>
+        </Ww>
+        <Ww>
+          <count>13</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>Crtl_mode,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>14</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>*add_pitch</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

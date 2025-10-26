@@ -16,11 +16,7 @@ platform\gimbal.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/list.h
 platform\gimbal.o: ../Core/Instance/struct_typedef.h
 platform\gimbal.o: ../Core/applications/communication_bond/remote_control.h
 platform\gimbal.o: ../Core/applications/communication_bond/bsp_rc.h
-platform\gimbal.o: ../Core/applications/algorithm/motor.h
-platform\gimbal.o: ../Core/Inc/config.h
-platform\gimbal.o: ../Core/applications/algorithm/imu.h
-platform\gimbal.o: ../Core/Inc/gpio.h
-platform\gimbal.o: ../Core/Inc/main.h
+platform\gimbal.o: ../Core/applications/Serial/serial.h
 platform\gimbal.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h
 platform\gimbal.o: ../Core/Inc/stm32f4xx_hal_conf.h
 platform\gimbal.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h
@@ -55,6 +51,13 @@ platform\gimbal.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h
 platform\gimbal.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd.h
 platform\gimbal.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usb.h
 platform\gimbal.o: ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd_ex.h
+platform\gimbal.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+platform\gimbal.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+platform\gimbal.o: ../Core/applications/algorithm/motor.h
+platform\gimbal.o: ../Core/Inc/config.h
+platform\gimbal.o: ../Core/applications/algorithm/imu.h
+platform\gimbal.o: ../Core/Inc/gpio.h
+platform\gimbal.o: ../Core/Inc/main.h
 platform\gimbal.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 platform\gimbal.o: ../Core/applications/communication_bond/BMI088driver.h
 platform\gimbal.o: ../Core/applications/algorithm/INS.h
@@ -69,4 +72,5 @@ platform\gimbal.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h
 platform\gimbal.o: ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h
 platform\gimbal.o: C:\Keil_v5\ARM\PACK\ARM\CMSIS\5.4.0\CMSIS\DSP\Include\arm_math.h
 platform\gimbal.o: ../Drivers/CMSIS/Include/core_cm4.h
-platform\gimbal.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+platform\gimbal.o: ../Core/applications/VPC/VPC.h
+platform\gimbal.o: ../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h

@@ -54,10 +54,13 @@ void LIMIT_MIN_MAX(float be,float nmax,float mmax){
 		be=nmax;
 	}
 }
-  //重置PID积分项（未完善，会使得突变更严重）
-void reset_pid_integrals(pid_struct_t *gimbal)
+  //重置PID积分项和误差项，使得归中后更过度更平滑（未完善，可优化）
+void reset_pid_integrals(pid_struct_t *pid)
 {
-    gimbal->i_out = 0;  
+	pid->i_out =0;
+	pid->err[0]=0;
+	pid->err[1]=0;
+	pid->d_out=0;
 }
                                          //目标      //实际
 float pid_calc_speed(pid_struct_t *pid, float tar, float real)//PID运算函数
@@ -160,8 +163,8 @@ void gimbal_PID_init()//角度环和速度环的PID初始化,只是初测出来�
   pid_init(&gimbal_yaw_speed_pid_return, 200,0.06,0.003, 1000, 1000);//P=30,I=0,D=0`
   pid_init(&gimbal_yaw_angle_pid_return, 50,0,0.005,100, 1000);//P=500,I=0,D=1
 	//PITCH轴初始化
-	pid_init(&gimbal_pitch_speed_pid, 0, 0, 0, 1000, 1000);//P=30,I=0,D=0
-	pid_init(&gimbal_pitch_angle_pid, 0, 0, 0,100, 1000);//P=500,I=0,D=1
-  pid_init(&gimbal_pitch_speed_pid_return, 300,0,0, 1000, 1000);//P=30,I=0,D=0`
-  pid_init(&gimbal_pitch_angle_pid_return, 0,0,0,100, 1000);//P=500,I=0,D=1
+	pid_init(&gimbal_pitch_speed_pid,10,0,0, 1000, 1000);//P=30,I=0,D=0
+	pid_init(&gimbal_pitch_angle_pid,250, 0, 0,100, 1000);//P=500,I=0,D=1
+  pid_init(&gimbal_pitch_speed_pid_return, 15,0.001,0, 1000, 1000);//P=30,I=0,D=0`
+  pid_init(&gimbal_pitch_angle_pid_return, 500,0,0.001,100, 1000);//P=500,I=0,D=1
 }
