@@ -137,7 +137,7 @@ void MX_FREERTOS_Init(void) {
   IMU_slovingHandle = osThreadCreate(osThread(IMU_sloving), NULL);
 
   /* definition and creation of VPC_sloving */
-  osThreadDef(VPC_sloving, VPC_Task, osPriorityLow, 0, 128);
+  osThreadDef(VPC_sloving, VPC_Task, osPriorityIdle, 0, 128);
   VPCHandle = osThreadCreate(osThread(VPC_sloving), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
