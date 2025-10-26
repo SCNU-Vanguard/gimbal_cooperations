@@ -44,8 +44,8 @@ void Motor_Calc(gimbal_control_t *feedback_update)
 	//pitch轴计算
 	tar=msp(motor_ready[1].target,-90,+90,-pi,pi);
 	real=msp(feedback_update->gimbal_pitch_motor.absolute_angle,-90,+90,-pi,pi);
-	motor_ready[MOTOR_PITCH].output_Position=pid_calc_raw(&gimbal_yaw_angle_pid,tar,real);
-  motor_ready[MOTOR_PITCH].output=pid_calc_speed(&gimbal_yaw_speed_pid,motor_ready[MOTOR_PITCH].output_Position,motor_data[MOTOR_PITCH].speed);
+	motor_ready[MOTOR_PITCH].output_Position=pid_calc_raw(&gimbal_pitch_angle_pid,tar,real);
+  motor_ready[MOTOR_PITCH].output=pid_calc_speed(&gimbal_pitch_speed_pid,motor_ready[MOTOR_PITCH].output_Position,motor_data[MOTOR_PITCH].speed);
 
 }
 

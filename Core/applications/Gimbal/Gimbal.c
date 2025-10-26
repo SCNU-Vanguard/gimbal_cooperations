@@ -175,11 +175,11 @@ void gimbal_detact_calibration(gimbal_control_t *gimbal_motort){
         //    }else{
         if(int_time > GIMBAL_INIT_TIME && int_stop_time > GIMBAL_INIT_STOP_TIME){
 					//在归中结束后将当前位置设为目标位置，抑制电机归中后漂移
-					reset_pid_integrals(&gimbal_pitch_angle_pid_return);
-					reset_pid_integrals(&gimbal_pitch_speed_pid_return);
-					reset_pid_integrals(&gimbal_pitch_speed_pid);
+					//reset_pid_integrals(&gimbal_pitch_angle_pid_return);
+					//reset_pid_integrals(&gimbal_pitch_speed_pid_return);
+					//reset_pid_integrals(&gimbal_pitch_speed_pid);
           MotorSetTar(&motor_ready[0],motor_data[0].angle, ABS);
-          MotorSetTar(&motor_ready[1],motor_data[1].angle, ABS);			
+          //MotorSetTar(&motor_ready[1],motor_data[1].angle, ABS);			
             //信号量释放
             xSemaphoreGive(g_xSemTicks);
             int_stop_time = 0;
