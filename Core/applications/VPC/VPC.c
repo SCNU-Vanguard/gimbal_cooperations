@@ -4,8 +4,14 @@
 
  void VPC_Receive(void)
  {
-   xSemaphoreTake(g_xSemVPC, portMAX_DELAY);
-   UnPack_Data_ROS2(buf_receive_from_nuc, &aim_packet_from_nuc, (sizeof(aim_packet_from_nuc)+1));
+  /* Wait until Serial notifies that a validated packet is ready. */
+  if (g_xSemVPC == NULL) {
+    /* semaphore not ready yet; avoid calling null handle */
+    vTaskDelay(pdMS_TO_TICKS(10));
+    return;
+  }
+  xSemaphoreTake(g_xSemVPC, pdMS_TO_TICKS(10));
+  /* Serial already copied validated frame into aim_packet_from_nuc in UnPack_Data_ROS2 */
  }
  
 
@@ -19,6 +25,11 @@ void VPC_Init(void)
  void VPC_Task(void *argument)
  {
     VPC_Init();
+    /* one-shot debug notification to host to confirm task start */
+    {
+      const char msg[] = "VPC task started\r\n";
+      CDC_SendFeed((uint8_t*)msg, sizeof(msg)-1);
+    }
     TickType_t lastWakeTime = xTaskGetTickCount();
 
     for(;;)

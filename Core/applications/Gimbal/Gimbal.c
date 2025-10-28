@@ -17,7 +17,7 @@ float add_yaw;
 float add_pitch;
 
 SemaphoreHandle_t g_xSemTicks;
-SemaphoreHandle_t g_xSemVPC = NULL;  
+/* g_xSemVPC is defined in freertos.c (extern in VPC.h) */
   
 
 typedef struct{
@@ -37,7 +37,7 @@ void Gimbal_task(void){
     while (1)
     {
 
-      gimbal_control.Ctl_mode=1;  //云台远程操控模式   0 为视觉自动模式  1为遥控器模式
+      gimbal_control.Ctl_mode=0;  //云台远程操控模式   0 为视觉自动模式  1为遥控器模式
 
 
       if (gimbal_control.Ctl_mode==1)//远程操控模式
@@ -58,7 +58,7 @@ void Gimbal_task(void){
           gimbal_feedback_update(&gimbal_control,&temp_data.diff_yaw,&temp_data.diff_pitch,gimbal_control.Ctl_mode);
           gimbal_angle_limit(&gimbal_control,&temp_data.diff_yaw,&temp_data.diff_pitch);
           Motor_Calc(&gimbal_control);
-
+          vTaskDelay(pdMS_TO_TICKS(1));
        }
        
     }
@@ -88,7 +88,7 @@ static fp32 motor_ecd_to_angle_change(uint16_t ecd, uint16_t offset_ecd)
 //云台更新数据
 static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_yaw,float *add_pitch,uint8_t Crtl_mode){
 
-    g_xSemVPC = xSemaphoreCreateBinary();
+    /* g_xSemVPC must not be created here; it's created centrally in MX_FREERTOS_Init */
     //更新电机实时角度
     feedback_update->gimbal_pitch_motor.motor_gyro=motor_data[1].angle;
     feedback_update->gimbal_yaw_motor.motor_gyro=motor_data[0].angle;
@@ -126,8 +126,12 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_
     feedback_update->gimbal_pitch_motor.relative_angle=motor_ecd_to_angle_change(feedback_update->gimbal_pitch_motor.motor_gyro,PITCH_OFFSET_ECD);
     feedback_update->gimbal_yaw_motor.relative_angle_set=motor_ecd_to_angle_change(feedback_update->gimbal_yaw_motor.motor_gyro_set,0);
     
-	  if(Crtl_mode == 0)
-    xSemaphoreGive(g_xSemVPC);
+            if(Crtl_mode == 0) {
+               
+                 xSemaphoreGive(g_xSemVPC);
+               
+            }
+		vTaskDelay(5);
 
     //计算云台相对于最大限幅值的相对角度，同时判断此时电机处于左值还是右值
     // if(feedback_update->gimbal_pitch_motor.relative_angle_set-PITCH_Limit_Hight>0)
@@ -146,7 +150,7 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_
 
 //云台校准中值并执行归中
 void gimbal_detact_calibration(gimbal_control_t *gimbal_motort){
-   
+    
     //添加标志位判断有无执行过归中，如果有，则不再归中
     while(GIMBAL_GET_FLAG(GIMBAL_OFFSET_FLAG)){
         
@@ -176,7 +180,7 @@ void gimbal_detact_calibration(gimbal_control_t *gimbal_motort){
         //    if(int_time < GIMBAL_INIT_TIME && int_stop_time < GIMBAL_INIT_STOP_TIME){
         //     return;
         //    }else{
-        if(int_time > GIMBAL_INIT_TIME && int_stop_time > GIMBAL_INIT_STOP_TIME){
+        if((int_time > GIMBAL_INIT_TIME && int_stop_time > GIMBAL_INIT_STOP_TIME)||(int_time > 10)){
 					//在归中结束后将当前位置设为目标位置，抑制电机归中后漂移
 					//reset_pid_integrals(&gimbal_pitch_angle_pid_return);
 					//reset_pid_integrals(&gimbal_pitch_speed_pid_return);

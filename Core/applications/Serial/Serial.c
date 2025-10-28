@@ -11,6 +11,13 @@
 #include "usbd_cdc_if.h"
 #include "string.h"
 #include "imu.h"
+/* FreeRTOS for semaphore notify */
+#include "FreeRTOS.h"
+#include "semphr.h"
+#include "stm32f4xx.h" /* for __get_IPSR */
+
+/* extern semaphore defined in freertos.c */
+extern SemaphoreHandle_t g_xSemVPC;
 
 
 receive_packet_t aim_packet_from_nuc;
@@ -80,6 +87,16 @@ void UnPack_Data_ROS2(uint8_t *receive_buf,receive_packet_t *receive_packet,uint
         if((w_expected & 0xff) == receive_buf[Len - 2] && ((w_expected >> 8) & 0xff) == receive_buf[Len - 1])
         {
             memcpy(receive_packet,receive_buf, Len);
+      /* notify VPC task that a validated packet is ready */
+      if (g_xSemVPC != NULL) {
+        if (__get_IPSR() != 0) {
+          BaseType_t xHigherPriorityTaskWoken = pdFALSE;
+          xSemaphoreGiveFromISR(g_xSemVPC, &xHigherPriorityTaskWoken);
+          portYIELD_FROM_ISR(xHigherPriorityTaskWoken);
+        } else {
+          xSemaphoreGive(g_xSemVPC);
+        }
+      }
         }
 	}
     memset(receive_buf,0,Len);

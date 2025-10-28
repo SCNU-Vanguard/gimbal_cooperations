@@ -55,6 +55,8 @@
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
 osThreadId VPCHandle;
+/* global VPC semaphore (single definition) */
+SemaphoreHandle_t g_xSemVPC = NULL;
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
 osThreadId can_send_motorHandle;
@@ -110,6 +112,11 @@ void MX_FREERTOS_Init(void) {
 
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
+  /* Create VPC semaphore early so tasks can safely take/give it. */
+  g_xSemVPC = xSemaphoreCreateBinary();
+  if (g_xSemVPC == NULL) {
+    /* Allocation failed - optionally handle (blink LED / log). */
+  }
   /* USER CODE END RTOS_SEMAPHORES */
 
   /* USER CODE BEGIN RTOS_TIMERS */
@@ -138,7 +145,7 @@ void MX_FREERTOS_Init(void) {
   IMU_slovingHandle = osThreadCreate(osThread(IMU_sloving), NULL);
 
   /* definition and creation of VPC_sloving */
-  osThreadDef(VPC_sloving, VPC_Task, osPriorityIdle, 0, 128);
+  osThreadDef(VPC_sloving, VPC_Task, osPriorityLow, 0, 128);
   VPCHandle = osThreadCreate(osThread(VPC_sloving), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
