@@ -37,7 +37,7 @@ void Gimbal_task(void){
     while (1)
     {
 
-      gimbal_control.Ctl_mode=0;  //云台远程操控模式   0 为视觉自动模式  1为遥控器模式
+      gimbal_control.Ctl_mode=1;  //云台远程操控模式   0 为视觉自动模式  1为遥控器模式
 
 
       if (gimbal_control.Ctl_mode==1)//远程操控模式

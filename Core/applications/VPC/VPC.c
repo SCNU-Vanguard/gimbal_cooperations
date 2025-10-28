@@ -4,15 +4,8 @@
 
  void VPC_Receive(void)
  {
-   /* Wait for notification from Gimbal that new aim data is ready. */
    xSemaphoreTake(g_xSemVPC, portMAX_DELAY);
-
-   /* After being notified, unpack and process the latest buffer. */
    UnPack_Data_ROS2(buf_receive_from_nuc, &aim_packet_from_nuc, (sizeof(aim_packet_from_nuc)+1));
-
-   /* Process data (e.g. send/visualize) */
-   vofa_demo2(aim_packet_from_nuc.yaw_diff, aim_packet_from_nuc.pitch_diff, &huart6);
-
  }
  
 
@@ -31,7 +24,7 @@ void VPC_Init(void)
     for(;;)
      {
       VPC_Receive();
-         Pack_And_Send_Data_ROS2(&aim_packet_to_nuc);     //我们要发什么呢？🤔
+         Pack_And_Send_Data_ROS2(&aim_packet_to_nuc); 
          vTaskDelayUntil(&lastWakeTime, VPC_TASK_PERIOD);
      }
 
