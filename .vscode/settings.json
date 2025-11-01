@@ -29,7 +29,8 @@
         "bmi088middleware.h": "c",
         "bmi088reg.h": "c",
         "vpc.h": "c",
-        "stdint.h": "c"
+        "stdint.h": "c",
+        "usbd_cdc_if.h": "c"
     },
     "cmake.sourceDirectory": "E:/RM/gimbal_cooperations/Drivers/CMSIS/NN",
     "cmake.allowUnsupportedPresetsVersions": true,

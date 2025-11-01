@@ -9,6 +9,8 @@
 #include "Serial.h"
 #include "vofa.h"
 #include "gimbal.h"
+#include "usbd_cdc_if.h"
+#include "INS.h"
 
 void VPC_Init(void);
 void VPC_Receive(void);

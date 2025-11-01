@@ -20,6 +20,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_cdc_if.h"
+#include "Serial.h"
 
 /* USER CODE BEGIN INCLUDE */
 
@@ -155,6 +156,7 @@ static int8_t CDC_Init_FS(void)
   /* Set Application Buffers */
   USBD_CDC_SetTxBuffer(&hUsbDeviceFS, UserTxBufferFS, 0);
   USBD_CDC_SetRxBuffer(&hUsbDeviceFS, UserRxBufferFS);
+
   return (USBD_OK);
   /* USER CODE END 3 */
 }
@@ -258,10 +260,25 @@ static int8_t CDC_Control_FS(uint8_t cmd, uint8_t* pbuf, uint16_t length)
   * @param  Len: Number of data received (in bytes)
   * @retval Result of the operation: USBD_OK if all operations are OK else USBD_FAIL
   */
+
+
 static int8_t CDC_Receive_FS(uint8_t* Buf, uint32_t *Len)
 {
   /* USER CODE BEGIN 6 */
-  USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
+  /* Defensive checks */
+  if (Buf == NULL || Len == NULL || *Len == 0) {
+    USBD_CDC_ReceivePacket(&hUsbDeviceFS);
+    return (USBD_OK);
+  }
+
+  /* Copy received bytes into application buffer (size of receive_packet_t) */
+  uint32_t copyLen = (*Len > sizeof(buf_receive_from_nuc)) ? sizeof(buf_receive_from_nuc) : *Len;
+  memcpy(buf_receive_from_nuc, Buf, copyLen);
+
+  /* Call UnPack which performs CRC check and will notify VPC (uses FromISR when appropriate) */
+  UnPack_Data_ROS2(buf_receive_from_nuc, &aim_packet_from_nuc, (uint16_t)copyLen);
+
+  /* Re-arm reception for next OUT packet */
   USBD_CDC_ReceivePacket(&hUsbDeviceFS);
   return (USBD_OK);
   /* USER CODE END 6 */
@@ -282,10 +299,6 @@ uint8_t CDC_Transmit_FS(uint8_t* Buf, uint16_t Len)
 {
   uint8_t result = USBD_OK;
   /* USER CODE BEGIN 7 */
-  USBD_CDC_HandleTypeDef *hcdc = (USBD_CDC_HandleTypeDef*)hUsbDeviceFS.pClassData;
-  if (hcdc->TxState != 0){
-    return USBD_BUSY;
-  }
   USBD_CDC_SetTxBuffer(&hUsbDeviceFS, Buf, Len);
   result = USBD_CDC_TransmitPacket(&hUsbDeviceFS);
   /* USER CODE END 7 */

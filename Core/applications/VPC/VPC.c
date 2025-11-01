@@ -10,8 +10,12 @@
     vTaskDelay(pdMS_TO_TICKS(10));
     return;
   }
-  xSemaphoreTake(g_xSemVPC, pdMS_TO_TICKS(10));
+  xSemaphoreTake(g_xSemVPC, portMAX_DELAY);
+
   /* Serial already copied validated frame into aim_packet_from_nuc in UnPack_Data_ROS2 */
+  /* Copy relevant fields into outgoing packet so we reply with updated data */
+  aim_packet_to_nuc.yaw = INS.Yaw;
+  aim_packet_to_nuc.pitch = INS.Pitch;
  }
  
 
@@ -22,23 +26,23 @@ void VPC_Init(void)
 
 }
 
+
+
  void VPC_Task(void *argument)
  {
-    VPC_Init();
-    /* one-shot debug notification to host to confirm task start */
-    {
-      const char msg[] = "VPC task started\r\n";
-      CDC_SendFeed((uint8_t*)msg, sizeof(msg)-1);
-    }
-    TickType_t lastWakeTime = xTaskGetTickCount();
+  VPC_Init();
+  /* one-shot debug notification to host to confirm task start */
 
-    for(;;)
-     {
-      VPC_Receive();
-         Pack_And_Send_Data_ROS2(&aim_packet_to_nuc); 
-         vTaskDelayUntil(&lastWakeTime, VPC_TASK_PERIOD);
-     }
+  for(;;)
+   {
+    /* Block until a valid packet arrives, then send an updated response */
+    VPC_Receive();
+    Pack_And_Send_Data_ROS2(&aim_packet_to_nuc);
+    /* small yield to allow lower priority work; avoid busy-looping */
+    vTaskDelay(pdMS_TO_TICKS(1));
+   }
 
  }
 
 
+  
