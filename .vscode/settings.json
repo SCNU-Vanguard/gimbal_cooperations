@@ -34,5 +34,8 @@
     },
     "cmake.sourceDirectory": "E:/RM/gimbal_cooperations/Drivers/CMSIS/NN",
     "cmake.allowUnsupportedPresetsVersions": true,
-    "cmake.allowCommentsInPresetsFile": true
+    "cmake.allowCommentsInPresetsFile": true,
+    "python-envs.defaultEnvManager": "ms-python.python:conda",
+    "python-envs.defaultPackageManager": "ms-python.python:conda",
+    "python-envs.pythonProjects": []
 }

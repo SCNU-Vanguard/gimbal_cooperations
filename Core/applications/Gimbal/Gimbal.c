@@ -9,6 +9,7 @@
 #include "QuaternionEKF.h"
 #include "VPC.h"
 
+
 uint8_t   GIMBAL_OFFSET_FLAG=1; //云台标志位
 gimbal_control_t  gimbal_control;
 
@@ -21,8 +22,8 @@ SemaphoreHandle_t g_xSemTicks;
   
 
 typedef struct{
-    float diff_yaw;
-    float diff_pitch;
+    float yaw;
+    float pitch;
 }tempdata_t;
 
 tempdata_t temp_data;
@@ -51,12 +52,12 @@ void Gimbal_task(void){
 
        else if (gimbal_control.Ctl_mode==0)//视觉自动模式
        {
-           temp_data.diff_yaw=msp(aim_packet_from_nuc.yaw_diff,-pi,pi,0,8191);
-           temp_data.diff_pitch=msp(aim_packet_from_nuc.pitch_diff,-pi,pi,0,8191);
+           temp_data.yaw=msp(aim_packet_from_nuc.yaw,-pi,pi,-180,180);
+           temp_data.pitch=msp(aim_packet_from_nuc.pitch,-pi,pi,-90,90);
 
           gimbal_detact_calibration(&gimbal_control);
-          gimbal_feedback_update(&gimbal_control,&temp_data.diff_yaw,&temp_data.diff_pitch,gimbal_control.Ctl_mode);
-          gimbal_angle_limit(&gimbal_control,&temp_data.diff_yaw,&temp_data.diff_pitch);
+          gimbal_feedback_update(&gimbal_control,&temp_data.yaw,&temp_data.pitch,gimbal_control.Ctl_mode);
+          gimbal_angle_limit(&gimbal_control,&temp_data.yaw,&temp_data.pitch);
           Motor_Calc(&gimbal_control);
           vTaskDelay(pdMS_TO_TICKS(1));
        }
@@ -102,35 +103,34 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_
     feedback_update->gimbal_yaw_motor.absolute_angle=INS.Yaw;
 
     if(Crtl_mode==1)//更新遥控器实时角度
-			{
+	{
+
     feedback_update->gimbal_rc_ctrl=get_remote_control_point();
-	  *add_yaw=msp(feedback_update->gimbal_rc_ctrl->rc.ch[2],-660,660,-180,180);
+	*add_yaw=msp(feedback_update->gimbal_rc_ctrl->rc.ch[2],-660,660,-180,180);
     *add_pitch=msp(feedback_update->gimbal_rc_ctrl->rc.ch[3],-660,660,-90,90);
-      }
-
-    else if(Crtl_mode==0)//更新视觉控制实时角度
-		  {
-        *add_yaw = msp(aim_packet_from_nuc.yaw_diff,0,8191,-180,180);
-        *add_pitch = msp(aim_packet_from_nuc.pitch_diff,0,8191,-90,90);
-        aim_packet_from_nuc.yaw+=*add_yaw;
-        aim_packet_from_nuc.pitch+=*add_pitch;
-      }
-
+    
     feedback_update->gimbal_pitch_motor.absolute_angle_set=*add_pitch;
     feedback_update->gimbal_yaw_motor.absolute_angle_set=*add_yaw;
     //更新电机目标机械角度
     feedback_update->gimbal_pitch_motor.motor_gyro_set=feedback_update->gimbal_pitch_motor.motor_gyro+*add_pitch;
     feedback_update->gimbal_yaw_motor.motor_gyro_set=feedback_update->gimbal_yaw_motor.motor_gyro+*add_yaw;
 
-    //计算设置角度后的目标角度与中值的相对角度，并以此为标准，因为最大和最小限幅值也是根据相对角度来定的，这样避免目标角度出现负值
+        //计算设置角度后的目标角度与中值的相对角度，并以此为标准，因为最大和最小限幅值也是根据相对角度来定的，这样避免目标角度出现负值
     feedback_update->gimbal_pitch_motor.relative_angle=motor_ecd_to_angle_change(feedback_update->gimbal_pitch_motor.motor_gyro,PITCH_OFFSET_ECD);
     feedback_update->gimbal_yaw_motor.relative_angle_set=motor_ecd_to_angle_change(feedback_update->gimbal_yaw_motor.motor_gyro_set,0);
-    
-            if(Crtl_mode == 0) {
-               
-                 xSemaphoreGive(g_xSemVPC);
-               
-            }
+
+      }
+
+    else if(Crtl_mode==0)//更新视觉控制实时角度
+    {
+    //更新电机目标机械角度
+
+   
+    feedback_update->gimbal_pitch_motor.absolute_angle_set=temp_data.pitch;
+    feedback_update->gimbal_yaw_motor.absolute_angle_set=temp_data.yaw;
+
+    xSemaphoreGive(g_xSemVPC);
+    } 
 		vTaskDelay(5);
 
     //计算云台相对于最大限幅值的相对角度，同时判断此时电机处于左值还是右值
@@ -180,7 +180,7 @@ void gimbal_detact_calibration(gimbal_control_t *gimbal_motort){
         //    if(int_time < GIMBAL_INIT_TIME && int_stop_time < GIMBAL_INIT_STOP_TIME){
         //     return;
         //    }else{
-        if((int_time > GIMBAL_INIT_TIME && int_stop_time > GIMBAL_INIT_STOP_TIME)||(int_time > 10)){
+        if((int_time > GIMBAL_INIT_TIME && int_stop_time > GIMBAL_INIT_STOP_TIME)){
 					//在归中结束后将当前位置设为目标位置，抑制电机归中后漂移
 					//reset_pid_integrals(&gimbal_pitch_angle_pid_return);
 					//reset_pid_integrals(&gimbal_pitch_speed_pid_return);
@@ -228,19 +228,22 @@ void gimbal_angle_limit(gimbal_control_t *gimbal_motort,float *add_yaw,float *ad
 
     //yaw
     if(*add_yaw<0){
-        if(*add_yaw<=-50){
-        if(gimbal_motort->gimbal_yaw_motor.absolute_angle<=-50){
+        if(*add_yaw<=-90){
+        if(gimbal_motort->gimbal_yaw_motor.absolute_angle<=-90){
             MotorSetTar(&motor_ready[0],YAW_Limit_Low,ABS);
         }
     }else{
         MotorSetTar(&motor_ready[0],gimbal_motort->gimbal_yaw_motor.absolute_angle_set,ABS);
     }
     }else if(*add_yaw>0){
-        if(*add_yaw>=50){
-        if(gimbal_motort->gimbal_yaw_motor.absolute_angle>=50){
+        if(*add_yaw>=90){
+        if(gimbal_motort->gimbal_yaw_motor.absolute_angle>=90){
                 MotorSetTar(&motor_ready[0],YAW_Limit_Hight,ABS);
         }
-    }else{
+    else{
+				MotorSetTar(&motor_ready[0],gimbal_motort->gimbal_yaw_motor.absolute_angle_set,ABS);
+    }
+				}else{
 				MotorSetTar(&motor_ready[0],gimbal_motort->gimbal_yaw_motor.absolute_angle_set,ABS);
     }
 }else{
@@ -249,6 +252,4 @@ void gimbal_angle_limit(gimbal_control_t *gimbal_motort,float *add_yaw,float *ad
 
 
 }
-
-
 
