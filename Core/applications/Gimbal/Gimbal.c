@@ -37,26 +37,26 @@ void Gimbal_task(void){
     while (1)
     {
 
-      gimbal_control.Crtl_mode=0;  //云台远程操控模式   0 为视觉自动模式  1为遥控器模式
+      gimbal_control.Ctl_mode=0;  //云台远程操控模式   0 为视觉自动模式  1为遥控器模式
 
 
-      if (gimbal_control.Crtl_mode==1)//远程操控模式
+      if (gimbal_control.Ctl_mode==1)//远程操控模式
 		  {
             gimbal_detact_calibration(&gimbal_control);
-            gimbal_feedback_update(&gimbal_control,&add_yaw,&add_pitch,gimbal_control.Crtl_mode);
-            gimbal_angle_limit(&gimbal_control,&add_yaw,&add_pitch,gimbal_control.Crtl_mode);
+            gimbal_feedback_update(&gimbal_control,&add_yaw,&add_pitch,gimbal_control.Ctl_mode);
+            gimbal_angle_limit(&gimbal_control,&add_yaw,&add_pitch);
             //以absolute_angle_set为目标值，absolute_angle为当前值，进行pid串级环的运算，并将值存到motor_ready[]结构体中
             Motor_Calc(&gimbal_control);
        }
 
-       else if (gimbal_control.Crtl_mode==0)//视觉自动模式
+       else if (gimbal_control.Ctl_mode==0)//视觉自动模式
        {
            temp_data.diff_yaw=msp(aim_packet_from_nuc.yaw_diff,-pi,pi,0,8191);
            temp_data.diff_pitch=msp(aim_packet_from_nuc.pitch_diff,-pi,pi,0,8191);
 
           gimbal_detact_calibration(&gimbal_control);
-          gimbal_feedback_update(&gimbal_control,&temp_data.diff_yaw,&temp_data.diff_pitch,gimbal_control.Crtl_mode);
-          gimbal_angle_limit(&gimbal_control,&temp_data.diff_yaw,&temp_data.diff_pitch,gimbal_control.Crtl_mode);
+          gimbal_feedback_update(&gimbal_control,&temp_data.diff_yaw,&temp_data.diff_pitch,gimbal_control.Ctl_mode);
+          gimbal_angle_limit(&gimbal_control,&temp_data.diff_yaw,&temp_data.diff_pitch);
           Motor_Calc(&gimbal_control);
           vTaskDelay(pdMS_TO_TICKS(1));
        }
@@ -98,16 +98,24 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_
     //feedback_update->gimbal_yaw_motor.absolute_angle=imu_Angle.Yaw;
 		//feedback_update->gimbal_pitch_motor.absolute_angle=QEKF_INS.Roll;
     //feedback_update->gimbal_yaw_motor.absolute_angle=QEKF_INS.Yaw;
-	feedback_update->gimbal_pitch_motor.absolute_angle=INS.Roll;
+	  feedback_update->gimbal_pitch_motor.absolute_angle=INS.Roll;
     feedback_update->gimbal_yaw_motor.absolute_angle=INS.Yaw;
 
     if(Crtl_mode==1)//更新遥控器实时角度
-   {
+			{
     feedback_update->gimbal_rc_ctrl=get_remote_control_point();
-	
-    *add_yaw=msp(feedback_update->gimbal_rc_ctrl->rc.ch[2],-660,660,-180,180);
+	  *add_yaw=msp(feedback_update->gimbal_rc_ctrl->rc.ch[2],-660,660,-180,180);
     *add_pitch=msp(feedback_update->gimbal_rc_ctrl->rc.ch[3],-660,660,-90,90);
-    
+      }
+
+    else if(Crtl_mode==0)//更新视觉控制实时角度
+		  {
+        *add_yaw = msp(aim_packet_from_nuc.yaw_diff,0,8191,-180,180);
+        *add_pitch = msp(aim_packet_from_nuc.pitch_diff,0,8191,-90,90);
+        aim_packet_from_nuc.yaw+=*add_yaw;
+        aim_packet_from_nuc.pitch+=*add_pitch;
+      }
+
     feedback_update->gimbal_pitch_motor.absolute_angle_set=*add_pitch;
     feedback_update->gimbal_yaw_motor.absolute_angle_set=*add_yaw;
     //更新电机目标机械角度
@@ -118,21 +126,10 @@ static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_
     feedback_update->gimbal_pitch_motor.relative_angle=motor_ecd_to_angle_change(feedback_update->gimbal_pitch_motor.motor_gyro,PITCH_OFFSET_ECD);
     feedback_update->gimbal_yaw_motor.relative_angle_set=motor_ecd_to_angle_change(feedback_update->gimbal_yaw_motor.motor_gyro_set,0);
     
-    }
-
-    else if(Crtl_mode==0)//更新视觉控制实时角度
-    {
-
-       feedback_update->gimbal_pitch_motor.absolute_angle_set=aim_packet_from_nuc.pitch;
-       feedback_update->gimbal_yaw_motor.absolute_angle_set=aim_packet_from_nuc.yaw;
-
-       feedback_update->gimbal_pitch_motor.relative_angle_set=motor_ecd_to_angle_change(feedback_update->gimbal_pitch_motor.absolute_angle_set,PITCH_OFFSET_ECD);
-       feedback_update->gimbal_yaw_motor.relative_angle_set=motor_ecd_to_angle_change(feedback_update->gimbal_yaw_motor.absolute_angle_set,YAW_OFFSET_ECD);
-    }
-
             if(Crtl_mode == 0) {
                
-                 xSemaphoreGive(g_xSemVPC);          
+                 xSemaphoreGive(g_xSemVPC);
+               
             }
 		vTaskDelay(5);
 
@@ -204,10 +201,7 @@ void gimbal_detact_calibration(gimbal_control_t *gimbal_motort){
 
 
 //云台限幅
-void gimbal_angle_limit(gimbal_control_t *gimbal_motort,float *add_yaw,float *add_pitch,uint8_t Crtl_mode)
-{
-
-    if(Crtl_mode==1){
+void gimbal_angle_limit(gimbal_control_t *gimbal_motort,float *add_yaw,float *add_pitch){
 	 if (gimbal_motort == NULL || add_pitch == NULL||add_yaw==NULL) {
         return;
     }
@@ -257,11 +251,4 @@ void gimbal_angle_limit(gimbal_control_t *gimbal_motort,float *add_yaw,float *ad
 }
 
 
-if(Crtl_mode==0){
 
-
-
-
-}
-
-}
