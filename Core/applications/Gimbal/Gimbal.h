@@ -142,7 +142,7 @@ typedef struct
 
 static void gimbal_feedback_update(gimbal_control_t *feedback_update,float *add_yaw,float *add_pitch,uint8_t Crtl_mode);
 // 先声明函数（告诉编译器函数的签名）
-void gimbal_angle_limit(gimbal_control_t *gimbal_motort, float *add_yaw,float *add_pitch);
+void gimbal_set_tar(gimbal_control_t *gimbal_motort, float *add_yaw,float *add_pitch);
 // 再声明其他函数（如 gimbal_calibration）
 void gimbal_detact_calibration(gimbal_control_t *gimbal_motor_t);
 //float temp=local_rc_ctrl->rc.ch[0];

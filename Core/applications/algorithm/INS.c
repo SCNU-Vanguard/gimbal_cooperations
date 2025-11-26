@@ -198,7 +198,8 @@ for( ; ; )
 	{
 		ins_time++;
 	}
-	// temperature control
+
+	// 温度控制
     // if ((count % 2) == 0)
     // {
     //     // 500hz
